@@ -60,7 +60,8 @@ class MedicoController extends Controller
      */
     public function index()
     {
-        //
+       $medicos=Medico::with('Usuario','Usuario.Rol','Usuario.DatosPersonale','Usuario.Ubicacion','Especialidad','Cita','Horario','Titulo','Pago')->get();
+       return response()->json(["medicos"=>$medicos]);
     }
 
     /**
@@ -74,9 +75,17 @@ class MedicoController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Medico $medico)
+    public function show($medico)
     {
-        //
+        $medico=Medico::with('Usuario','Usuario.Rol','Usuario.DatosPersonale','Usuario.Ubicacion','Especialidad','Cita','Horario','Titulo','Pago')->whereId($medico)->first();
+        if(!$medico){
+            return response()->json([
+                "message"=>"Medico no encontrado"
+            ],500);
+        }
+        return response()->json([
+            "medico"=>$medico
+        ]);
     }
 
     /**
