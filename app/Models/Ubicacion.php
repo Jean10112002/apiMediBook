@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Ubicacion extends Model
 {
@@ -13,4 +14,7 @@ class Ubicacion extends Model
     protected $fillable=[
         "canton","provincia"
     ];
+    public function Usuario():HasMany{
+        return $this->HasMany(User::class,'ubicacion_id');
+    }
 }

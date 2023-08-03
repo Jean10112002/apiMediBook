@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('mensajes', function (Blueprint $table) {
             $table->id();
             $table->string('contenido');
-            $table->foreignId('usuario_enviado')
+            $table->foreignId('usuario_enviado_id')
             ->constrained('users')
             ->cascadeOnDelete()
             ->cascadeOnUpdate();
-            $table->foreignId('usuario_recibido')
+            $table->foreignId('usuario_recibido_id')
             ->constrained('users')
             ->cascadeOnDelete()
             ->cascadeOnUpdate();

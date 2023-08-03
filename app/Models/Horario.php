@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Horario extends Model
 {
@@ -16,4 +17,8 @@ class Horario extends Model
         "medico_id",
     ];
     public $timestamps=false;
+    public function Medico():BelongsTo{
+        return $this->belongsTo(Medico::class,'medico_id');
+    }
+
 }
