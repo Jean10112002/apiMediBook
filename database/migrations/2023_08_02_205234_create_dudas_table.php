@@ -13,7 +13,12 @@ return new class extends Migration
     {
         Schema::create('dudas', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->dateTime('fecha');
+            $table->string('contenido');
+            $table->foreignId('paciente_id')
+            ->constrained('pacientes')
+            ->cascadeOnDelete()
+            ->cascadeOnUpdate();
         });
     }
 

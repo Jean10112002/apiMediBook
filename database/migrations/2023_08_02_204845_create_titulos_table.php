@@ -13,7 +13,12 @@ return new class extends Migration
     {
         Schema::create('titulos', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->string('nombre');
+            $table->date('fecha');
+            $table->foreignId('medico_id')
+            ->constrained('medicos')
+            ->cascadeOnDelete()
+            ->cascadeOnUpdate();
         });
     }
 

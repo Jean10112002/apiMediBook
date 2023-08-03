@@ -13,7 +13,15 @@ return new class extends Migration
     {
         Schema::create('resenias', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->integer('calificacion');
+            $table->foreignId('comentario_io')
+            ->constrained('comentarios')
+            ->cascadeOnDelete()
+            ->cascadeOnUpdate();
+            $table->foreignId('cita_id')
+            ->constrained('citas')
+            ->cascadeOnDelete()
+            ->cascadeOnUpdate();
         });
     }
 

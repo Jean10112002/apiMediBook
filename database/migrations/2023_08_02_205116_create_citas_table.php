@@ -13,7 +13,24 @@ return new class extends Migration
     {
         Schema::create('citas', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->date('fecha');
+            $table->string('titulo');
+            $table->time('hora_inicio');
+            $table->time('hora_fin');
+            $table->boolean('estado')->default(1);
+            $table->foreignId('medico_id')
+            ->constrained('medicos')
+            ->cascadeOnDelete()
+            ->cascadeOnUpdate();
+            $table->foreignId('paciente_id')
+            ->constrained('pacientes')
+            ->cascadeOnDelete()
+            ->cascadeOnUpdate();
+            $table->foreignId('estado_cita_id')
+            ->constrained('estado_citas')
+            ->cascadeOnDelete()
+            ->cascadeOnUpdate();
+
         });
     }
 

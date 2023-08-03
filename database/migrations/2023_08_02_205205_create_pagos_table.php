@@ -13,7 +13,19 @@ return new class extends Migration
     {
         Schema::create('pagos', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->double('cantidad');
+            $table->foreignId('cita_id')
+            ->constrained('citas')
+            ->cascadeOnDelete()
+            ->cascadeOnUpdate();
+            $table->foreignId('medico_id')
+            ->constrained('medicos')
+            ->cascadeOnDelete()
+            ->cascadeOnUpdate();
+            $table->foreignId('paciente_id')
+            ->constrained('pacientes')
+            ->cascadeOnDelete()
+            ->cascadeOnUpdate();
         });
     }
 

@@ -13,7 +13,14 @@ return new class extends Migration
     {
         Schema::create('recetas', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->string('nombre_medicamento');
+            $table->integer('cantidad');
+            $table->string('lapso_tiempo');
+            $table->foreignId('cita_id')
+            ->constrained('citas')
+            ->cascadeOnDelete()
+            ->cascadeOnUpdate();
+
         });
     }
 

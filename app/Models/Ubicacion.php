@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Ubicacion extends Model
 {
     use HasFactory;
+    public $timestamps=false;
+    protected $table="ubicacions";
+    protected $fillable=[
+        "canton","provincia"
+    ];
 }

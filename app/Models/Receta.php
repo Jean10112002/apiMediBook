@@ -8,4 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class Receta extends Model
 {
     use HasFactory;
+    public $timestamps=false;
+    protected $table="recetas";
+    protected $fillable=[
+        "nombre_medicamento",
+        "cantidad",
+        "lapso_tiempo",
+        "cita_id",
+    ];
 }

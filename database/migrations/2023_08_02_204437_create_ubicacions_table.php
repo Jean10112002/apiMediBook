@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('ubicacions', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->string('canton');
+            $table->string('provincia');
         });
     }
 

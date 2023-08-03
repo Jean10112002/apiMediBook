@@ -13,7 +13,12 @@ return new class extends Migration
     {
         Schema::create('vacunas', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->string('nombre');
+            $table->date('fecha');
+            $table->foreignId('paciente_id')
+            ->constrained('pacientes')
+            ->cascadeOnDelete()
+            ->cascadeOnUpdate();
         });
     }
 

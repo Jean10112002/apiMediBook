@@ -13,7 +13,11 @@ return new class extends Migration
     {
         Schema::create('cita_observacions', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->string('contenido');
+            $table->foreignId('cita_id')
+            ->constrained('citas')
+            ->cascadeOnDelete()
+            ->cascadeOnUpdate();
         });
     }
 

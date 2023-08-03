@@ -13,7 +13,15 @@ return new class extends Migration
     {
         Schema::create('antecedentes_medicos', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->string('condicion_medica');
+            $table->string('alergias');
+            $table->string('cirugias_previas');
+            $table->string('tipo_sangre');
+            $table->string('otros_datos');
+            $table->foreignId('paciente_id')
+            ->constrained('pacientes')
+            ->cascadeOnDelete()
+            ->cascadeOnUpdate();
         });
     }
 

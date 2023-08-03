@@ -13,7 +13,10 @@ return new class extends Migration
     {
         Schema::create('datos_personales', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->string('telefono')->unique();
+            $table->integer('edad');
+            $table->date('fecha');
+            $table->string('ci')->unique();
         });
     }
 

@@ -13,7 +13,16 @@ return new class extends Migration
     {
         Schema::create('reply_dudas', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->dateTime('fecha');
+            $table->string('contenido');
+            $table->foreignId('user_id')
+            ->constrained('users')
+            ->cascadeOnDelete()
+            ->cascadeOnUpdate();
+            $table->foreignId('cita_id')
+            ->constrained('citas')
+            ->cascadeOnDelete()
+            ->cascadeOnUpdate();
         });
     }
 
