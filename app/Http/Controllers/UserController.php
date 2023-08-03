@@ -17,6 +17,9 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
+    public function __construct() {
+        $this->middleware('onlyAdmin')->only('destroy');
+    }
     private $rulesUpdateAll = array(
         'nombre' => 'required|string',
         'apellido' => 'required|string',
@@ -193,7 +196,9 @@ class UserController extends Controller
     public function destroy($id)
     {
         try {
-            User::find($id)->delete();
+            $user=User::find($id);
+            DatosPersonale::find($user->datos_personales_id)->delete();
+            Ubicacion::find($user->ubicacion_id)->delete();
             return response()->json([
                 "message" => "Usuario eliminado correctamente"
             ]);
