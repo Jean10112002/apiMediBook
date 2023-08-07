@@ -24,7 +24,10 @@ class PagoController extends Controller
         'medico_id.required' => 'El campo medico_id es obligatorio.',
         'cita_id.required' => 'El campo cita_id es obligatorio.',
     ];
-
+    public function __construct()
+    {
+        $this->middleware(['onlyPaciente'])->only('store');
+    }
     public function index()
     {
         try {

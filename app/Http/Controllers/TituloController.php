@@ -35,6 +35,13 @@ class TituloController extends Controller
         'fecha.date' => 'El formato de fecha no es válido.',
         'fecha.before_or_equal' => 'La fecha no debe ser posterior a la fecha actual.',
     );
+    public function __construct()
+    {
+        $this->middleware(['onlyAdmin','onlyMedico'])->only('update');
+        $this->middleware(['onlyAdmin','onlyMedico'])->only('destroy');
+        $this->middleware(['onlyAdmin','onlyMedico'])->only('show');
+        $this->middleware(['onlyAdmin','onlyMedico'])->only('store');
+    }
     public function index()
     {
         try {

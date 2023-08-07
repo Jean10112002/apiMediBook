@@ -33,7 +33,12 @@ class AntecedentesMedicoController extends Controller
         'otros_datos.required' => 'El campo otros_datos es obligatorio.',
         'otros_datos.string' => 'El campo otros_datos debe ser una cadena.',
     ];
-
+    public function __construct()
+    {
+        $this->middleware(['onlyPaciente'])->only('store');
+        $this->middleware(['onlyPaciente'])->only('update');
+        $this->middleware(['onlyPaciente'])->only('destroy');
+    }
     public function index()
     {
         try {

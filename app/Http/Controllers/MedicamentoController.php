@@ -30,7 +30,12 @@ class MedicamentoController extends Controller
         'duracion.required' => 'El campo duracion es obligatorio.',
         'duracion.string' => 'El campo duracion debe ser una cadena.',
     ];
-
+    public function __construct()
+    {
+        $this->middleware(['onlyPaciente'])->only('store');
+        $this->middleware(['onlyPaciente'])->only('update');
+        $this->middleware(['onlyPaciente'])->only('destroy');
+    }
     public function index()
     {
         try {

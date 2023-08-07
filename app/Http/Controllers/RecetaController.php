@@ -42,6 +42,12 @@ class RecetaController extends Controller
         'lapso_tiempo.required' => 'El campo lapso de tiempo es requerido.',
         'lapso_tiempo.string' => 'El campo lapso de tiempo debe ser una cadena de texto.',
     ];
+    public function __construct()
+    {
+        $this->middleware(['onlyMedico'])->only('store');
+        $this->middleware(['onlyMedico'])->only('destroy');
+        $this->middleware(['onlyMedico'])->only('update');
+    }
     public function index()
     {
         try {

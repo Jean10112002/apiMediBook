@@ -45,6 +45,7 @@ class HorarioController extends Controller
         $this->middleware('onlyAdmin')->only('store');
         $this->middleware('onlyAdmin')->only('destroy');
         $this->middleware('onlyAdmin')->only('update');
+        $this->middleware('onlyAdmin')->only('show');
     }
     public function index()
     {

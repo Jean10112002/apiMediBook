@@ -15,6 +15,11 @@ class MensajeController extends Controller
      * Display a listing of the resource.
      */
 
+     public function __construct()
+    {
+        $this->middleware(['onlyPaciente','onlyMedico'])->only('store');
+        $this->middleware(['onlyPaciente','onlyMedico'])->only('misMensajes');
+    }
     private $rules = [
         'contenido' => 'required|string',
         'usuario_recibido_id' => 'required',

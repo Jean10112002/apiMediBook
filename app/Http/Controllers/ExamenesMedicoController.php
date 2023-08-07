@@ -26,7 +26,12 @@ class ExamenesMedicoController extends Controller
         'resultado.required' => 'El campo resultado es obligatorio.',
         'resultado.string' => 'El campo resultado debe ser una cadena.',
     ];
-
+    public function __construct()
+    {
+        $this->middleware(['onlyPaciente'])->only('store');
+        $this->middleware(['onlyPaciente'])->only('update');
+        $this->middleware(['onlyPaciente'])->only('destroy');
+    }
     /**
      * Display a listing of the resource.
      */

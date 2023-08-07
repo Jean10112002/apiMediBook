@@ -48,9 +48,9 @@ Route::group(['middleware' => ["auth:sanctum"]], function () {
 
     //historial medico de un paciente en especifico
     Route::get('historial-medico/{id}', [PacienteController::class, 'historialmedico']);
-    Route::get('paciente-information', [PacienteController::class, 'informacionTotal']);
+    Route::get('paciente-information', [PacienteController::class, 'informacionTotal'])->middleware(['onlyAdmin','onlyPaciente']);
     //ver mi informacion como paciente y medico todo lo relacionado a mi
-    Route::get('medico-information', [MedicoController::class, 'informacionTotal']);
+    Route::get('medico-information', [MedicoController::class, 'informacionTotal'])->middleware(['onlyAdmin','onlyMedico']);
 
 
     //crud total de citas mi

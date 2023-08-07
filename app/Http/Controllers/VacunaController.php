@@ -25,6 +25,12 @@ class VacunaController extends Controller
         'fecha.date' => 'El campo fecha debe ser una fecha válida.',
         'fecha.before_or_equal' => 'El campo fecha debe ser anterior o igual a la fecha actual.',
     ];
+    public function __construct()
+    {
+        $this->middleware(['onlyPaciente'])->only('store');
+        $this->middleware(['onlyPaciente'])->only('update');
+        $this->middleware(['onlyPaciente'])->only('destroy');
+    }
     public function index()
     {
         try {

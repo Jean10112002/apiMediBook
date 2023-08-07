@@ -16,6 +16,8 @@ class Kernel extends HttpKernel
     protected $routeMiddleware = [
         // Otros middlewares existentes...
         'onlyAdmin' => \App\Http\Middleware\onlyAdmin::class,
+        'onlyPaciente' => \App\Http\Middleware\onlyPaciente::class,
+        'onlyMedico' => \App\Http\Middleware\onlyMedico::class,
     ];
     protected $middleware = [
         // \App\Http\Middleware\TrustHosts::class,
