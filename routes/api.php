@@ -35,6 +35,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
+
+
 Route::group(['middleware' => ["auth:sanctum"]], function (){
     Route::post('/register-medico', [MedicoController::class, 'register'])->middleware('onlyAdmin');//solo admin registra medico
     Route::apiResource('medicos',MedicoController::class)->only('index','show','update','destroy');
@@ -43,12 +46,12 @@ Route::group(['middleware' => ["auth:sanctum"]], function (){
     Route::apiResource('titulos',TituloController::class)->only('store','update','destroy','show');
     Route::apiResource('especialidades',EspecialidadeController::class)->only('index','store','update','destroy','show')->middleware('onlyAdmin');
 
-    //ver mi informacion como paciente y medico todo lo relacionado a mi
-    Route::get('paciente-information',[PacienteController::class,'informacionTotal']);
-    Route::get('medico-information',[MedicoController::class,'informacionTotal']);
+  //historial medico de un paciente en especifico
+  Route::get('historial-medico/{id}',[PacienteController::class,'historialmedico']);
+  Route::get('paciente-information',[PacienteController::class,'informacionTotal']);
+      //ver mi informacion como paciente y medico todo lo relacionado a mi
+      Route::get('medico-information',[MedicoController::class,'informacionTotal']);
 
-     //historial medico de un paciente en especifico
-     Route::get('historial-medico/{id}',[PacienteController::class,'historialmedico']);
 
     //crud total de citas mi
     Route::apiResource('citas',CitaController::class)->only('index','show','store','update','destroy');

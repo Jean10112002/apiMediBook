@@ -8,6 +8,7 @@ use App\Models\Ubicacion;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class PacienteController extends Controller
@@ -159,8 +160,61 @@ class PacienteController extends Controller
     }
     public function informacionTotal(){
 
-    }
-    public function historialmedico(){
+        try{
+            $paciente = Paciente::with('Usuario','Usuario.Rol',
+            'Usuario.DatosPersonale','Usuario.Ubicacion','Cita','Cita.Medico','Cita.Medico.Usuario',
+            'Cita.Medico.Especialidad','Cita.Medico.Usuario.Rol','Cita.Medico.Usuario.Ubicacion',
+            'Cita.Medico.Usuario.DatosPersonale','Cita.Paciente','Cita.Paciente.Usuario',
+            'Cita.Paciente.Usuario.Rol','Cita.Paciente.Usuario.DatosPersonale','Cita.Paciente.Usuario.Ubicacion',
+            'Cita.EstadoCita','Duda','Duda.Paciente','Duda.Paciente.Usuario','Duda.Paciente.Usuario.Rol',
+            'Duda.Paciente.Usuario.DatosPersonale','Duda.Paciente.Usuario.Ubicacion',
+            'AntecedentesMedico','AntecedentesMedico.Paciente','AntecedentesMedico.Paciente.Usuario',
+            'AntecedentesMedico.Paciente.Usuario.Rol','AntecedentesMedico.Paciente.Usuario.DatosPersonale',
+            'AntecedentesMedico.Paciente.Usuario.Ubicacion','Medicamento','Medicamento.Paciente',
+            'Medicamento.Paciente.Usuario','Medicamento.Paciente.Usuario.Rol','Medicamento.Paciente.Usuario.DatosPersonale',
+            'Medicamento.Paciente.Usuario.Ubicacion',
+            'Vacuna','Vacuna.Paciente','Vacuna.Paciente.Usuario','Vacuna.Paciente.Usuario.Rol'
+            ,'Vacuna.Paciente.Usuario.DatosPersonale',
+            'Vacuna.Paciente.Usuario.Ubicacion','ExamenesMedico','ExamenesMedico.Paciente',
+            'ExamenesMedico.Paciente.Usuario','ExamenesMedico.Paciente.Usuario.Rol',
+            'ExamenesMedico.Paciente.Usuario.DatosPersonale','ExamenesMedico.Paciente.Usuario.Ubicacion',
+            'Pago','Pago.Cita','Pago.Cita.Medico','Pago.Cita.Medico.Usuario','Pago.Cita.Medico.Usuario.Rol',
+            'Pago.Cita.Medico.Usuario.DatosPersonale','Pago.Cita.Medico.Usuario.Ubicacion',
+            'Pago.Cita.Medico.Especialidad','Pago.Cita.Paciente','Pago.Cita.Paciente.Usuario',
+            'Pago.Cita.Paciente.Usuario.Rol','Pago.Cita.Paciente.Usuario.DatosPersonale'
+            ,'Pago.Cita.Paciente.Usuario.Ubicacion','Pago.Cita.EstadoCita',
+            'Pago.Medico','Pago.Medico.Especialidad','Pago.Medico.Usuario','Pago.Medico.Usuario.Rol',
+            'Pago.Medico.Usuario.DatosPersonale','Pago.Medico.Usuario.Ubicacion','Pago.Paciente',
+            'Pago.Paciente.Usuario','Pago.Paciente.Usuario.Rol','Pago.Paciente.Usuario.DatosPersonale',
+            'Pago.Paciente.Usuario.Ubicacion')->get();
 
+            return response()->json(['Informacion' => $paciente]);
+        }catch (\Throwable $th) {
+            //throw $th;
+
+            return response()->json(['no se encontró Informacion', 'Informacion' => $paciente]);
+        }
+
+
+    }
+    public function historialmedico($id){
+        try{
+            $paciente = Paciente::with('Usuario','Usuario.DatosPersonale','Usuario.Ubicacion','AntecedentesMedico','AntecedentesMedico.Paciente','AntecedentesMedico.Paciente.Usuario',
+            'AntecedentesMedico.Paciente.Usuario.Rol','AntecedentesMedico.Paciente.Usuario.DatosPersonale',
+            'AntecedentesMedico.Paciente.Usuario.Ubicacion','Medicamento','Medicamento.Paciente',
+            'Medicamento.Paciente.Usuario','Medicamento.Paciente.Usuario.Rol','Medicamento.Paciente.Usuario.DatosPersonale',
+            'Medicamento.Paciente.Usuario.Ubicacion',
+            'Vacuna','Vacuna.Paciente','Vacuna.Paciente.Usuario','Vacuna.Paciente.Usuario.Rol'
+            ,'Vacuna.Paciente.Usuario.DatosPersonale',
+            'Vacuna.Paciente.Usuario.Ubicacion','ExamenesMedico','ExamenesMedico.Paciente',
+            'ExamenesMedico.Paciente.Usuario','ExamenesMedico.Paciente.Usuario.Rol',
+            'ExamenesMedico.Paciente.Usuario.DatosPersonale','ExamenesMedico.Paciente.Usuario.Ubicacion',)->where('id','=',$id)->get();
+
+            return response()->json(['Historial Medico' => $paciente]);
+        }catch (\Throwable $th) {
+            //throw $th;
+
+            return response()->json(['no se encontró Informacion', 'Informacion' => $paciente]);
+        }
     }
 }
