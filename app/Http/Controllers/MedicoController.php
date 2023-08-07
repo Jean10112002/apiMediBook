@@ -55,13 +55,42 @@ class MedicoController extends Controller
         'provincia.required' => 'La provincia es requerida.',
         'provincia.string' => 'La provincia debe ser texto.'
     );
+    private $rulesRegisterUpdate = array(
+        'nombre' => 'required|string',
+        'apellido' => 'required|string',
+        'fecha' => 'required|date',
+        'canton' => 'required|string',
+        'provincia' => 'required|string'
+    );
+
+    private $messagesUpdate = array(
+        'nombre.required' => 'El nombre es requerido.',
+        'nombre.string' => 'El nombre debe ser texto.',
+
+        'apellido.required' => 'El apellido es requerido.',
+        'apellido.string' => 'El apellido debe ser texto.',
+
+        'fecha.required' => 'La fecha es requerida.',
+        'fecha.date' => 'Debe ser una fecha válida.',
+
+        'canton.required' => 'El cantón es requerido.',
+        'canton.string' => 'El cantón debe ser texto.',
+
+        'provincia.required' => 'La provincia es requerida.',
+        'provincia.string' => 'La provincia debe ser texto.'
+    );
     /**
      * Display a listing of the resource.
      */
+    public function __construct()
+    {
+        $this->middleware('onlyAdmin')->only('update');
+        $this->middleware('onlyAdmin')->only('destroy');
+    }
     public function index()
     {
-       $medicos=Medico::with('Usuario','Usuario.Rol','Usuario.DatosPersonale','Usuario.Ubicacion','Especialidad','Cita','Horario','Titulo','Pago')->get();
-       return response()->json(["medicos"=>$medicos]);
+        $medicos = Medico::with('Usuario', 'Usuario.Rol', 'Usuario.DatosPersonale', 'Usuario.Ubicacion', 'Especialidad', 'Cita', 'Horario', 'Titulo', 'Pago')->get();
+        return response()->json(["medicos" => $medicos]);
     }
 
     /**
@@ -77,31 +106,48 @@ class MedicoController extends Controller
      */
     public function show($medico)
     {
-        $medico=Medico::with('Usuario','Usuario.Rol','Usuario.DatosPersonale','Usuario.Ubicacion','Especialidad','Cita','Horario','Titulo','Pago')->whereId($medico)->first();
-        if(!$medico){
+        $medico = Medico::with('Usuario', 'Usuario.Rol', 'Usuario.DatosPersonale', 'Usuario.Ubicacion', 'Especialidad', 'Cita', 'Horario', 'Titulo', 'Pago')->whereId($medico)->first();
+        if (!$medico) {
             return response()->json([
-                "message"=>"Medico no encontrado"
-            ],500);
+                "message" => "Medico no encontrado"
+            ], 500);
         }
         return response()->json([
-            "medico"=>$medico
+            "medico" => $medico
         ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Medico $medico)
+    public function update(Request $request, $id)
     {
-        //
+        $validator = Validator::make($request->all(), $this->rulesRegisterUpdate, $this->messagesUpdate);
+        if ($validator->fails()) {
+            $messages = $validator->messages();
+            return response()->json(["messages" => $messages], 500);
+        }
+        try {
+            $medico = Medico::find($id);
+            $medico->update($request->all());
+            return response()->json(["message" => "medico actualizado"], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Medico $medico)
+    public function destroy(string $medico)
     {
-        //
+        try {
+            Medico::find($medico)->delete();
+        return response()->json(["message" => "medico eliminado"], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+
     }
     public function register(Request $request)
     {
@@ -111,42 +157,42 @@ class MedicoController extends Controller
             return response()->json(["messages" => $messages], 500);
         }
         $user = User::where("email", "=", $request->email)->first();
-        if($user){
+        if ($user) {
             return response()->json([
-                "error"=>"Correo ya utilizado"
-            ],500);
+                "error" => "Correo ya utilizado"
+            ], 500);
         }
         $ci = DatosPersonale::where("ci", "=", $request->ci)->first();
-        if($ci){
+        if ($ci) {
             return response()->json([
-                "error"=>"Cedula ya utilizada"
-            ],500);
+                "error" => "Cedula ya utilizada"
+            ], 500);
         }
         $telefono = DatosPersonale::where("telefono", "=", $request->telefono)->first();
-        if($telefono){
+        if ($telefono) {
             return response()->json([
-                "error"=>"Telefono ya utilizado"
-            ],500);
+                "error" => "Telefono ya utilizado"
+            ], 500);
         }
-        try{
-           // Suponiendo que recibes la fecha en un campo llamado "fecha_nacimiento" del request.
-           $fechaNacimiento = $request->input('fecha');
+        try {
+            // Suponiendo que recibes la fecha en un campo llamado "fecha_nacimiento" del request.
+            $fechaNacimiento = $request->input('fecha');
 
-           // Parsea la fecha usando Carbon para que puedas trabajar con ella como objeto Carbon.
-           $fechaNacimientoCarbon = Carbon::parse($fechaNacimiento);
+            // Parsea la fecha usando Carbon para que puedas trabajar con ella como objeto Carbon.
+            $fechaNacimientoCarbon = Carbon::parse($fechaNacimiento);
 
-           // Obtiene la fecha actual en formato Carbon.
-           $fechaActual = Carbon::now();
+            // Obtiene la fecha actual en formato Carbon.
+            $fechaActual = Carbon::now();
 
-           // Calcula la edad restando la fecha de nacimiento de la fecha actual y obteniendo los años.
-           $edad = $fechaActual->diffInYears($fechaNacimientoCarbon);
-            $datosPersonales=DatosPersonale::create([
-                "telefono"=>$request->telefono,"edad"=>$edad,"fecha"=>$request->fecha,"ci"=>$request->ci
+            // Calcula la edad restando la fecha de nacimiento de la fecha actual y obteniendo los años.
+            $edad = $fechaActual->diffInYears($fechaNacimientoCarbon);
+            $datosPersonales = DatosPersonale::create([
+                "telefono" => $request->telefono, "edad" => $edad, "fecha" => $request->fecha, "ci" => $request->ci
             ]);
-            $ubicacion=Ubicacion::create([
-                "canton"=>$request->canton,"provincia"=>$request->provincia
+            $ubicacion = Ubicacion::create([
+                "canton" => $request->canton, "provincia" => $request->provincia
             ]);
-            $userNuevo=User::create([
+            $userNuevo = User::create([
                 'nombre' => $request->nombre,
                 'apellido' => $request->apellido,
                 'email' => $request->email,
@@ -156,8 +202,8 @@ class MedicoController extends Controller
                 "ubicacion_id" => $ubicacion->id
             ]);
             Medico::create([
-                "user_id"=>$userNuevo->id,
-                "especialidad_id"=>1
+                "user_id" => $userNuevo->id,
+                "especialidad_id" => 1
             ]);
             return response()->json([
                 "status" => 1,
@@ -166,6 +212,5 @@ class MedicoController extends Controller
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
-
     }
 }

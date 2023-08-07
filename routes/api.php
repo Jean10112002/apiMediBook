@@ -22,12 +22,12 @@ use Illuminate\Support\Facades\Route;
 */
 Route::group(['middleware' => ["auth:sanctum"]], function (){
     Route::post('/register-medico', [MedicoController::class, 'register'])->middleware('onlyAdmin');//solo admin registra medico
-    Route::get('/medico/{id}', [MedicoController::class, 'show']);//solo admin registra medico
-    Route::get('/medicos', [MedicoController::class, 'index']);
+    Route::apiResource('medicos',MedicoController::class)->only('index','show','update','destroy');
     Route::apiResource('user',UserController::class)->only('index','update','destroy','show'); //update solo admin,destroy igual e index
-    Route::apiResource('horarios',HorarioController::class)->only('store','destroy','update');
+    Route::apiResource('horarios',HorarioController::class)->only('store','destroy','update','show');
     Route::apiResource('titulos',TituloController::class)->only('store','update','destroy');
-    Route::apiResource('especialidades',EspecialidadeController::class)->only('index')->middleware('onlyAdmin');
+    Route::apiResource('especialidades',EspecialidadeController::class)->only('index','store','update','destroy')->middleware('onlyAdmin');
+    //ver mi informacion como paciente y medico todo lo relacionado a mi
     Route::controller(UserController::class)->group(function () {
         Route::get('user-profile', 'userProfile');
         Route::post('logout',  'logout');
