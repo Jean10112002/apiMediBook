@@ -214,6 +214,33 @@ class MedicoController extends Controller
         }
     }
     public function informacionTotal(){
+        try{
+            $medico = Medico::with('Usuario','Usuario.Rol',
+            'Usuario.DatosPersonale','Usuario.Ubicacion','Especialidad','Cita','Cita.Medico','Cita.Medico.Usuario',
+            'Cita.Medico.Especialidad','Cita.Medico.Usuario.Rol','Cita.Medico.Usuario.Ubicacion',
+            'Cita.Medico.Usuario.DatosPersonale','Cita.Paciente','Cita.Paciente.Usuario',
+            'Cita.Paciente.Usuario.Rol','Cita.Paciente.Usuario.DatosPersonale','Cita.Paciente.Usuario.Ubicacion',
+            'Cita.EstadoCita','Horario','Horario.Medico','Horario.Medico.Especialidad','Horario.Medico.Usuario','Horario.Medico.Usuario.Rol',
+            'Horario.Medico.Usuario.DatosPersonale','Horario.Medico.Usuario.Ubicacion',
+            'Titulo','Titulo.Medico','Titulo.Medico.Especialidad','Titulo.Medico.Usuario'
+            ,'Titulo.Medico.Usuario.Rol','Titulo.Medico.Usuario.DatosPersonale','Titulo.Medico.Usuario.Ubicacion'
+            ,'Pago','Pago.Cita','Pago.Cita.Medico','Pago.Cita.Medico.Usuario',
+            'Pago.Cita.Medico.Usuario.Rol',
+            'Pago.Cita.Medico.Usuario.DatosPersonale','Pago.Cita.Medico.Usuario.Ubicacion',
+            'Pago.Cita.Medico.Especialidad','Pago.Cita.Paciente','Pago.Cita.Paciente.Usuario',
+            'Pago.Cita.Paciente.Usuario.Rol','Pago.Cita.Paciente.Usuario.DatosPersonale'
+            ,'Pago.Cita.Paciente.Usuario.Ubicacion','Pago.Cita.EstadoCita',
+            'Pago.Medico','Pago.Medico.Especialidad','Pago.Medico.Usuario','Pago.Medico.Usuario.Rol',
+            'Pago.Medico.Usuario.DatosPersonale','Pago.Medico.Usuario.Ubicacion','Pago.Paciente',
+            'Pago.Paciente.Usuario','Pago.Paciente.Usuario.Rol','Pago.Paciente.Usuario.DatosPersonale',
+            'Pago.Paciente.Usuario.Ubicacion'
+           )->get();
 
+            return response()->json(['Informacion' => $medico]);
+        }catch (\Throwable $th) {
+            //throw $th;
+
+            return response()->json(['no se encontró Informacion', 'Informacion' => $medico]);
+        }
     }
 }
