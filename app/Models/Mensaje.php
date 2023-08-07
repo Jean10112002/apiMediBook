@@ -12,6 +12,7 @@ class Mensaje extends Model
     protected $table="mensajes";
     protected $fillable=[
         "contenido",
+        "fecha",
         "usuario_enviado_id",
         "usuario_recibido_id",
     ];

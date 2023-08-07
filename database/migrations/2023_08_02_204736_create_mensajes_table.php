@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('mensajes', function (Blueprint $table) {
             $table->id();
             $table->string('contenido');
+            $table->dateTime('fecha');
             $table->foreignId('usuario_enviado_id')
             ->constrained('users')
             ->cascadeOnDelete()
