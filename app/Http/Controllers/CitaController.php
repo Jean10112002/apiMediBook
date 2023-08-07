@@ -148,6 +148,7 @@ class CitaController extends Controller
         try {
             $cita=Cita::findOrFail($cita);
             $cita->estado=0;
+            $cita->estado_cita_id=2;
             $cita->save();
             return response()->json([
                 "message"=>"cita eliminada exitosamente"
