@@ -161,7 +161,9 @@ class PacienteController extends Controller
     public function informacionTotal(){
 
         try{
-            $paciente = Paciente::with('Usuario','Usuario.Rol',
+            $usuario = Auth::guard('sanctum')->user();
+            $paciente = Paciente::where('user_id', $usuario->id)->first();
+            $paciente = Paciente::whereId($paciente->id)->with('Usuario','Usuario.Rol',
             'Usuario.DatosPersonale','Usuario.Ubicacion','Cita','Cita.Medico','Cita.Medico.Usuario',
             'Cita.Medico.Especialidad','Cita.Medico.Usuario.Rol','Cita.Medico.Usuario.Ubicacion',
             'Cita.Medico.Usuario.DatosPersonale','Cita.Paciente','Cita.Paciente.Usuario',
@@ -186,13 +188,11 @@ class PacienteController extends Controller
             'Pago.Medico','Pago.Medico.Especialidad','Pago.Medico.Usuario','Pago.Medico.Usuario.Rol',
             'Pago.Medico.Usuario.DatosPersonale','Pago.Medico.Usuario.Ubicacion','Pago.Paciente',
             'Pago.Paciente.Usuario','Pago.Paciente.Usuario.Rol','Pago.Paciente.Usuario.DatosPersonale',
-            'Pago.Paciente.Usuario.Ubicacion')->get();
+            'Pago.Paciente.Usuario.Ubicacion')->first();
 
             return response()->json(['Informacion' => $paciente]);
-        }catch (\Throwable $th) {
-            //throw $th;
-
-            return response()->json(['no se encontró Informacion', 'Informacion' => $paciente]);
+        }catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
         }
 
 
@@ -211,10 +211,8 @@ class PacienteController extends Controller
             'ExamenesMedico.Paciente.Usuario.DatosPersonale','ExamenesMedico.Paciente.Usuario.Ubicacion',)->where('id','=',$id)->get();
 
             return response()->json(['Historial Medico' => $paciente]);
-        }catch (\Throwable $th) {
-            //throw $th;
-
-            return response()->json(['no se encontró Informacion', 'Informacion' => $paciente]);
+        }catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 }

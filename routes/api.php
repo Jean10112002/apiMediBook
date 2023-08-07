@@ -38,48 +38,48 @@ use Illuminate\Support\Facades\Route;
 
 
 
-Route::group(['middleware' => ["auth:sanctum"]], function (){
-    Route::post('/register-medico', [MedicoController::class, 'register'])->middleware('onlyAdmin');//solo admin registra medico
-    Route::apiResource('medicos',MedicoController::class)->only('index','show','update','destroy');
-    Route::apiResource('user',UserController::class)->only('index','update','destroy','show'); //update solo admin,destroy igual e index
-    Route::apiResource('horarios',HorarioController::class)->only('store','destroy','update','show');
-    Route::apiResource('titulos',TituloController::class)->only('store','update','destroy','show');
-    Route::apiResource('especialidades',EspecialidadeController::class)->only('index','store','update','destroy','show')->middleware('onlyAdmin');
+Route::group(['middleware' => ["auth:sanctum"]], function () {
+    Route::post('/register-medico', [MedicoController::class, 'register'])->middleware('onlyAdmin'); //solo admin registra medico
+    Route::apiResource('medicos', MedicoController::class)->only('index', 'show', 'update', 'destroy');
+    Route::apiResource('user', UserController::class)->only('index', 'update', 'destroy', 'show'); //update solo admin,destroy igual e index
+    Route::apiResource('horarios', HorarioController::class)->only('store', 'destroy', 'update', 'show');
+    Route::apiResource('titulos', TituloController::class)->only('store', 'update', 'destroy', 'show');
+    Route::apiResource('especialidades', EspecialidadeController::class)->only('index', 'store', 'update', 'destroy', 'show')->middleware('onlyAdmin');
 
-  //historial medico de un paciente en especifico
-  Route::get('historial-medico/{id}',[PacienteController::class,'historialmedico']);
-  Route::get('paciente-information',[PacienteController::class,'informacionTotal']);
-      //ver mi informacion como paciente y medico todo lo relacionado a mi
-      Route::get('medico-information',[MedicoController::class,'informacionTotal']);
+    //historial medico de un paciente en especifico
+    Route::get('historial-medico/{id}', [PacienteController::class, 'historialmedico']);
+    Route::get('paciente-information', [PacienteController::class, 'informacionTotal']);
+    //ver mi informacion como paciente y medico todo lo relacionado a mi
+    Route::get('medico-information', [MedicoController::class, 'informacionTotal']);
 
 
     //crud total de citas mi
-    Route::apiResource('citas',CitaController::class)->only('index','show','store','update','destroy');
+    Route::apiResource('citas', CitaController::class)->only('index', 'show', 'store', 'update', 'destroy');
     //crud de recetas mi
-    Route::apiResource('recetas',RecetaController::class)->only('index','show','store','update','destroy');
+    Route::apiResource('recetas', RecetaController::class)->only('index', 'show', 'store', 'update', 'destroy');
     //crud de calificacion
-    Route::apiResource('resenia',ReseniaController::class)->only('store','index','show','update','destroy');
+    Route::apiResource('resenia', ReseniaController::class)->only('store', 'index', 'show', 'update', 'destroy');
     //crud de pagos mi
-    Route::apiResource('pagos',PagoController::class)->only('store','show','index');
+    Route::apiResource('pagos', PagoController::class)->only('store', 'show', 'index');
     //crud de comentarios mi
-    Route::apiResource('comentarios',ComentarioController::class)->only('index');
+    Route::apiResource('comentarios', ComentarioController::class)->only('index');
     //crud de mensajes mi
-    Route::apiResource('mensajes',MensajeController::class)->only('index','show','store');
-    Route::get('mis-mensajes',[MensajeController::class,'misMensajes']);
+    Route::apiResource('mensajes', MensajeController::class)->only('index', 'show', 'store');
+    Route::get('mis-mensajes', [MensajeController::class, 'misMensajes']);
     //crud de dudas mi
-    Route::apiResource('dudas',DudaController::class)->only('index','show','store','update');
+    Route::apiResource('dudas', DudaController::class)->only('index', 'show', 'store', 'update');
     //crud de replydudas mi
-    Route::apiResource('replydudas',ReplyDudaController::class)->only('index','show','store','update');
+    Route::apiResource('replydudas', ReplyDudaController::class)->only('index', 'show', 'store', 'update');
     //crud de observaciones
-    Route::apiResource('observaciones',CitaObservacionController::class)->only('index','show','store','update');
+    Route::apiResource('observaciones', CitaObservacionController::class)->only('index', 'show', 'store', 'update');
     //crud examenes_medicos mi
-    Route::apiResource('examenes-medicos',ExamenesMedicoController::class)->only('index','show','store','update','destroy');
+    Route::apiResource('examenes-medicos', ExamenesMedicoController::class)->only('index', 'show', 'store', 'update', 'destroy');
     //crud medicamentos mi
-    Route::apiResource('medicamentos',MedicamentoController::class)->only('index','show','store','update','destroy');
+    Route::apiResource('medicamentos', MedicamentoController::class)->only('index', 'show', 'store', 'update', 'destroy');
     //crud vacunas mi
-    Route::apiResource('vacunas',VacunaController::class)->only('index','show','store','update','destroy');
+    Route::apiResource('vacunas', VacunaController::class)->only('index', 'show', 'store', 'update', 'destroy');
     //crud antecedentes_medicos mi
-    Route::apiResource('antecedentes-medicos',AntecedentesMedicoController::class)->only('index','show','store','update','destroy');
+    Route::apiResource('antecedentes-medicos', AntecedentesMedicoController::class)->only('index', 'show', 'store', 'update', 'destroy');
 
 
 
@@ -91,7 +91,6 @@ Route::group(['middleware' => ["auth:sanctum"]], function (){
         Route::post('updatePassword', [UserController::class, 'updatePassword']);
         Route::put('updatePasswordAdmin/{id}', [UserController::class, 'updatePasswordAdmin'])->middleware('onlyAdmin'); //solo admin
     });
-
 });
 Route::post('/login', [UserController::class, 'login']);
 Route::post('/register', [PacienteController::class, 'register']);
