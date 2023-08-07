@@ -44,6 +44,10 @@ Route::group(['middleware' => ["auth:sanctum"]], function (){
     //ver mi informacion como paciente y medico todo lo relacionado a mi
     Route::get('paciente-information',[PacienteController::class,'informacionTotal']);
     Route::get('medico-information',[MedicoController::class,'informacionTotal']);
+
+     //historial medico de un paciente en especifico
+     Route::get('historial-medico/{id}',[PacienteController::class,'historialmedico']);
+
     //crud total de citas
     Route::apiResource('citas',CitaController::class)->only('index','show','store','update','destroy');
     //crud de recetas
@@ -71,8 +75,7 @@ Route::group(['middleware' => ["auth:sanctum"]], function (){
     //crud antecedentes_medicos
     Route::apiResource('antecedentes-medicos',AntecedentesMedicoController::class)->only('index','show','store','update','destroy');
 
-    //historial medico de un paciente en especifico
-    Route::get('historial-medico/{id}',[PacienteController::class,'historialmedico']);
+
 
     //
 
