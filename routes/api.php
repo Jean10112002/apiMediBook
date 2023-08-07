@@ -28,6 +28,12 @@ Route::group(['middleware' => ["auth:sanctum"]], function (){
     Route::apiResource('titulos',TituloController::class)->only('store','update','destroy');
     Route::apiResource('especialidades',EspecialidadeController::class)->only('index','store','update','destroy')->middleware('onlyAdmin');
     //ver mi informacion como paciente y medico todo lo relacionado a mi
+
+    //crud total de citas
+
+    //crud de recetas
+    //crud de calificacion
+    //crud de feedback
     Route::controller(UserController::class)->group(function () {
         Route::get('user-profile', 'userProfile');
         Route::post('logout',  'logout');
