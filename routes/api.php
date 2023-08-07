@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+
 Route::group(['middleware' => ["auth:sanctum"]], function (){
     Route::post('/register-medico', [MedicoController::class, 'register'])->middleware('onlyAdmin');//solo admin registra medico
     Route::apiResource('medicos',MedicoController::class)->only('index','show','update','destroy');
@@ -27,6 +28,7 @@ Route::group(['middleware' => ["auth:sanctum"]], function (){
     Route::apiResource('horarios',HorarioController::class)->only('store','destroy','update','show');
     Route::apiResource('titulos',TituloController::class)->only('store','update','destroy');
     Route::apiResource('especialidades',EspecialidadeController::class)->only('index','store','update','destroy')->middleware('onlyAdmin');
+
     //ver mi informacion como paciente y medico todo lo relacionado a mi
 
     //crud total de citas

@@ -83,9 +83,17 @@ class HorarioController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Horario $horario)
+    public function show($id)
     {
         //
+        $horario = Horario::find($id);
+        if (!$horario) {
+            return response()->json(['message' => 'Horario no encontrado'], 404);
+        }
+        return response()->json([
+            'Horario'=>$horario
+        ]);
+
     }
 
     /**
