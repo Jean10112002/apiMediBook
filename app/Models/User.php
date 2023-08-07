@@ -44,6 +44,12 @@ class User extends Authenticatable
     public function Paciente():HasMany{
         return $this->HasMany(Paciente::class,'paciente_id');
     }
+    public function MensajeRecibido():HasMany{
+        return $this->HasMany(Mensaje::class,'usuario_recibido_id');
+    }
+    public function MensajeEnviado():HasMany{
+        return $this->HasMany(Mensaje::class,'usuario_enviado_id');
+    }
 
 
 }

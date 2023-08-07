@@ -37,7 +37,19 @@ class TituloController extends Controller
     );
     public function index()
     {
-        //
+        try {
+            $dudas = Titulo::all() ;
+            if (!$dudas) {
+                return response()->json([
+                    "message" => "Titulo no encontrada"
+                ], 404);
+            }
+            return response()->json([
+                "titulos" => $dudas
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     /**
@@ -69,9 +81,21 @@ class TituloController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Titulo $titulo)
+    public function show($titulo)
     {
-        //
+        try {
+            $dudas = Titulo::find($titulo) ;
+            if (!$dudas) {
+                return response()->json([
+                    "message" => "Titulo no encontrada"
+                ], 404);
+            }
+            return response()->json([
+                "titulos" => $dudas
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     /**
