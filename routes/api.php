@@ -32,7 +32,7 @@ Route::group(['middleware' => ["auth:sanctum"]], function (){
     //ver mi informacion como paciente y medico todo lo relacionado a mi
 
     //crud total de citas
-
+    //crud de especilidad
     //crud de recetas
     //crud de calificacion
     //crud de feedback
