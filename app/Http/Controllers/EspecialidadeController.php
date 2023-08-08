@@ -58,9 +58,21 @@ class EspecialidadeController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Especialidade $especialidade)
+    public function show( $especialidade)
     {
-        //
+        try {
+            $dudas = Especialidade::find($especialidade) ;
+            if (!$dudas) {
+                return response()->json([
+                    "message" => "Especialidad no encontrada"
+                ], 404);
+            }
+            return response()->json([
+                "especialidad" => $dudas
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     /**

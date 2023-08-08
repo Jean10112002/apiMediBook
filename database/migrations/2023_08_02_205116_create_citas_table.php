@@ -26,7 +26,7 @@ return new class extends Migration
             ->constrained('pacientes')
             ->cascadeOnDelete()
             ->cascadeOnUpdate();
-            $table->foreignId('estado_cita_id')
+            $table->foreignId('estado_cita_id')->default(1)
             ->constrained('estado_citas')
             ->cascadeOnDelete()
             ->cascadeOnUpdate();

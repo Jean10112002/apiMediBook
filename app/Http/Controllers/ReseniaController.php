@@ -28,6 +28,10 @@ class ReseniaController extends Controller
         'cita_id.required' => 'Se requiere la cita_id.',
 
     );
+    public function __construct()
+    {
+        $this->middleware(['onlyPaciente'])->only('store');
+    }
     public function index()
     {
         //

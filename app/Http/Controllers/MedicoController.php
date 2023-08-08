@@ -8,6 +8,7 @@ use App\Models\Ubicacion;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class MedicoController extends Controller
@@ -215,7 +216,9 @@ class MedicoController extends Controller
     }
     public function informacionTotal(){
         try{
-            $medico = Medico::with('Usuario','Usuario.Rol',
+            $usuario = Auth::guard('sanctum')->user();
+            $medic = Medico::where('user_id', $usuario->id)->first();
+            $medico = Medico::whereId($medic->id)->with('Usuario','Usuario.Rol',
             'Usuario.DatosPersonale','Usuario.Ubicacion','Especialidad','Cita','Cita.Medico','Cita.Medico.Usuario',
             'Cita.Medico.Especialidad','Cita.Medico.Usuario.Rol','Cita.Medico.Usuario.Ubicacion',
             'Cita.Medico.Usuario.DatosPersonale','Cita.Paciente','Cita.Paciente.Usuario',
@@ -234,13 +237,11 @@ class MedicoController extends Controller
             'Pago.Medico.Usuario.DatosPersonale','Pago.Medico.Usuario.Ubicacion','Pago.Paciente',
             'Pago.Paciente.Usuario','Pago.Paciente.Usuario.Rol','Pago.Paciente.Usuario.DatosPersonale',
             'Pago.Paciente.Usuario.Ubicacion'
-           )->get();
+           )->first();
 
             return response()->json(['Informacion' => $medico]);
-        }catch (\Throwable $th) {
-            //throw $th;
-
-            return response()->json(['no se encontró Informacion', 'Informacion' => $medico]);
+        }catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 }
