@@ -13,7 +13,7 @@ class EstadoCitaSeeder extends Seeder
      */
     public function run(): void
     {
-        $estadoCita=array('Pendiente','Cancelado','Exitoso');
+        $estadoCita=array('Pendiente','Cancelado','Exitoso','Perdida');
         foreach ($estadoCita as $e){
             EstadoCita::create([
                 "nombre"=>$e

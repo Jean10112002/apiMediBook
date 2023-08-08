@@ -13,7 +13,7 @@ class Resenia extends Model
     protected $table="resenias";
     protected $fillable=[
         "calificacion",
-        "comentario_io",
+        "comentario_id",
         "cita_id",
     ];
     public function Cita():BelongsTo{

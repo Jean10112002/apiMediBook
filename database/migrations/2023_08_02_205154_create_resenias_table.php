@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('resenias', function (Blueprint $table) {
             $table->id();
             $table->integer('calificacion');
-            $table->foreignId('comentario_io')
+            $table->foreignId('comentario_id')
             ->constrained('comentarios')
             ->cascadeOnDelete()
             ->cascadeOnUpdate();
