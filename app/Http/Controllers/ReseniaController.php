@@ -14,7 +14,7 @@ class ReseniaController extends Controller
      */
 
      private $rulesResenia = array(
-        'calificacion' => 'required|numeric|integer',
+        'calificacion' => 'required|numeric|integer|between:1,10',
         'comentario_id' => 'required',
         'cita_id' => 'required',
     );
@@ -24,8 +24,24 @@ class ReseniaController extends Controller
         'calificacion.required' => 'La Calificacion es requerido.',
         'calificacion.numeric' => 'Solo se permite numeros.',
         'calificacion.integer' => 'Solo numeros enteros.',
+        'calificacion.between' => 'La calificación debe estar entre 1 y 10.',
         'comentario_id.required' => 'Es requerido el Comentario_id.',
         'cita_id.required' => 'Se requiere la cita_id.',
+
+    );
+
+     private $rulesReseniaUpdate = array(
+        'calificacion' => 'required|numeric|integer|between:1,10',
+        'comentario_id' => 'required',
+    );
+
+    // Definimos los mensajes personalizados para cada regla de validación
+    private $messagesUpdate = array(
+        'calificacion.required' => 'La Calificacion es requerido.',
+        'calificacion.numeric' => 'Solo se permite numeros.',
+        'calificacion.integer' => 'Solo numeros enteros.',
+        'calificacion.between' => 'La calificación debe estar entre 1 y 10.',
+        'comentario_id.required' => 'Es requerido el Comentario_id.',
 
     );
     public function __construct()
@@ -81,7 +97,7 @@ class ReseniaController extends Controller
         } catch (ModelNotFoundException $e) {
             return response()->json(['error' => 'Reseña no encontrada'], 404);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Ocurrió un error en el servidor'], 500);
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 
@@ -91,7 +107,7 @@ class ReseniaController extends Controller
     public function update(Request $request,  $id)
     {
         //
-        $validator = Validator::make($request->all(), $this->rulesResenia, $this->messages);
+        $validator = Validator::make($request->all(), $this->rulesReseniaUpdate, $this->messagesUpdate);
         if ($validator->fails()) {
             $messages = $validator->messages();
             return response()->json(["messages" => $messages], 500);
@@ -101,7 +117,6 @@ class ReseniaController extends Controller
             $horario->update([
                 "calificacion" => $request->calificacion,
                 "comentario_id" => $request->comentario_id,
-                "cita_id" => $request->cita_id,
             ]);
             return response()->json(["message" => "Resenia actualizado"], 200);
         } catch (\Exception $e) {
@@ -118,7 +133,7 @@ class ReseniaController extends Controller
         try {
             $resenia=Resenia::find($id)->delete();
             return response()->json([
-                "message"=>"Resenia eliminado",'Resenia'=> $resenia
+                "message"=>"Resenia eliminado"
             ]);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);

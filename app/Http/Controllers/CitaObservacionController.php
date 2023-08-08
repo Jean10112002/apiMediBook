@@ -28,15 +28,12 @@ class CitaObservacionController extends Controller
     );
     private $rulesReseniaUpdate = array(
         'contenido' => 'required|string',
-
     );
 
     // Definimos los mensajes personalizados para cada regla de validación
     private $messagesUpdate = array(
         'contenido.required' => 'El Contenido es requerido.',
         'contenido.string' => 'Solo texto.',
-
-
     );
 
     public function index()
@@ -91,7 +88,7 @@ class CitaObservacionController extends Controller
         } catch (ModelNotFoundException $e) {
             return response()->json(['error' => 'CitaObservacion no encontrada'], 404);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Ocurrió un error en el servidor'], 500);
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 
@@ -127,7 +124,7 @@ class CitaObservacionController extends Controller
         try {
             $citao=CitaObservacion::find($id)->delete();
             return response()->json([
-                "message"=>"Resenia eliminado",'CitaObservacion'=> $citao
+                "message"=>"Resenia eliminado"
             ]);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);

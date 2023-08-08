@@ -44,6 +44,12 @@ class EspecialidadeController extends Controller
                 'messages'=>$messages
             ],500);
         }
+        $existe=Especialidade::where('nombre','=',$request->nombre)->first();
+        if($existe){
+            return response()->json([
+                "message"=>"Ya existe una especialidad con ese nombre, intente con otra"
+            ],500);
+        }
         Especialidade::create([
 
             'nombre'=>$request->nombre,
