@@ -43,7 +43,7 @@ Route::group(['middleware' => ["auth:sanctum"]], function () {
     Route::apiResource('medicos', MedicoController::class)->only('index', 'show', 'update', 'destroy');
     Route::apiResource('user', UserController::class)->only('index', 'update', 'destroy', 'show'); //update solo admin,destroy igual e index
     Route::apiResource('horarios', HorarioController::class)->only('store', 'destroy', 'update', 'show');
-    Route::apiResource('titulos', TituloController::class)->only('store', 'update', 'destroy', 'show');
+    Route::apiResource('titulos', TituloController::class)->only('store', 'update', 'destroy', 'show','index');
     Route::apiResource('especialidades', EspecialidadeController::class)->only('index', 'store', 'update', 'destroy', 'show')->middleware('onlyAdmin');
 
     //historial medico de un paciente en especifico

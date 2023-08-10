@@ -37,15 +37,12 @@ class TituloController extends Controller
     );
     public function __construct()
     {
-        $this->middleware(['onlyAdmin','onlyMedico'])->only('update');
-        $this->middleware(['onlyAdmin','onlyMedico'])->only('destroy');
-        $this->middleware(['onlyAdmin','onlyMedico'])->only('show');
-        $this->middleware(['onlyAdmin','onlyMedico'])->only('store');
+        $this->middleware('onlyAdminMedico')->only('store');
     }
     public function index()
     {
         try {
-            $dudas = Titulo::all() ;
+            $dudas = Titulo::with('Medico.Usuario.DatosPersonale','Medico.Usuario.Ubicacion')->get() ;
             if (!$dudas) {
                 return response()->json([
                     "message" => "Titulo no encontrada"
