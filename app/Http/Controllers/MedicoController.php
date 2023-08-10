@@ -218,7 +218,7 @@ class MedicoController extends Controller
         try{
             $usuario = Auth::guard('sanctum')->user();
             $medic = Medico::where('user_id', $usuario->id)->first();
-            $medico = Medico::whereId($medic->id)->with('Usuario','Usuario.Rol',
+            $medico = Medico::whereId($medic->id)->with('Cita.CitaObservacion','Usuario','Usuario.Rol',
             'Usuario.DatosPersonale','Usuario.Ubicacion','Especialidad','Cita','Cita.Medico','Cita.Medico.Usuario',
             'Cita.Medico.Especialidad','Cita.Medico.Usuario.Rol','Cita.Medico.Usuario.Ubicacion',
             'Cita.Medico.Usuario.DatosPersonale','Cita.Paciente','Cita.Paciente.Usuario',
@@ -236,7 +236,7 @@ class MedicoController extends Controller
             'Pago.Medico','Pago.Medico.Especialidad','Pago.Medico.Usuario','Pago.Medico.Usuario.Rol',
             'Pago.Medico.Usuario.DatosPersonale','Pago.Medico.Usuario.Ubicacion','Pago.Paciente',
             'Pago.Paciente.Usuario','Pago.Paciente.Usuario.Rol','Pago.Paciente.Usuario.DatosPersonale',
-            'Pago.Paciente.Usuario.Ubicacion'
+            'Pago.Paciente.Usuario.Ubicacion','Cita.Receta','Cita.Resenia.Comentario'
            )->first();
 
             return response()->json(['Informacion' => $medico]);

@@ -34,7 +34,7 @@ class Cita extends Model
     public function Receta():HasMany{
         return $this->HasMany(Receta::class,'cita_id');
     }
-    public function Reseña():HasMany{
+    public function Resenia():HasMany{
         return $this->HasMany(Resenia::class,'cita_id');
     }
     public function CitaObservacion():HasMany{

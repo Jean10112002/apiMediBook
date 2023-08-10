@@ -14,7 +14,7 @@ class Comentario extends Model
         "nombre"
     ];
     public $timestamps=false;
-    public function Reseña():HasMany{
+    public function Resenia():HasMany{
         return $this->HasMany(Resenia::class,'comentario_id');
     }
 }
