@@ -51,7 +51,7 @@ class RecetaController extends Controller
     public function index()
     {
         try {
-            $recetas=Receta::with('Cita','Cita.Medico','Cita.Paciente','Cita.Medico.Especialidad','Cita.Medico.Titulo','Cita.Medico.Usuario','Cita.Paciente.Usuario')->get();
+            $recetas=Receta::with('Cita','Cita.Medico','Cita.Paciente','Cita.Medico.Especialidad','Cita.Medico.Titulo','Cita.Medico.Usuario.Datospersonale','Cita.Paciente.Usuario.Datospersonale')->get();
             return response()->json([
                 "recetas"=>$recetas
             ],200);

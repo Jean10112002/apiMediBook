@@ -12,23 +12,22 @@ class EspecialidadeController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public $rulesEspecialidad=array(
-        'nombre' => 'required|string|regex:/^[a-zA-Z\s]+$/',
+    public $rulesEspecialidad = array(
+        'nombre' => 'required|string',
 
-);
-    public $mensajes=array(
+    );
+    public $mensajes = array(
         'nombre.required' => 'El nombre de la especialidad es requerida',
         'nombre.string' => 'Solo letras.',
-        'nombre.regex' => 'No se permite numeros.',
 
     );
 
     public function index()
     {
-       $especialidades=Especialidade::all();
-       return response()->json([
-        "especialidades"=>$especialidades
-       ]);
+        $especialidades = Especialidade::all();
+        return response()->json([
+            "especialidades" => $especialidades
+        ]);
     }
 
     /**
@@ -37,37 +36,35 @@ class EspecialidadeController extends Controller
     public function store(Request $request)
     {
         //
-        $validator=Validator::make($request->all(),$this->rulesEspecialidad,$this->mensajes);
-        if($validator -> fails()){
-            $messages=$validator->getMessageBag();
+        $validator = Validator::make($request->all(), $this->rulesEspecialidad, $this->mensajes);
+        if ($validator->fails()) {
+            $messages = $validator->getMessageBag();
             return response()->json([
-                'messages'=>$messages
-            ],500);
+                'messages' => $messages
+            ], 500);
         }
-        $existe=Especialidade::where('nombre','=',$request->nombre)->first();
-        if($existe){
+        $existe = Especialidade::where('nombre', '=', $request->nombre)->first();
+        if ($existe) {
             return response()->json([
-                "message"=>"Ya existe una especialidad con ese nombre, intente con otra"
-            ],500);
+                "message" => "Ya existe una especialidad con ese nombre, intente con otra"
+            ], 500);
         }
         Especialidade::create([
 
-            'nombre'=>$request->nombre,
-          ]);
-    return response()->json([
-        'messages'=>"Se creo  correctamente"
-    ]);
-
-
+            'nombre' => $request->nombre,
+        ]);
+        return response()->json([
+            'messages' => "Se creo  correctamente"
+        ]);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show( $especialidade)
+    public function show($especialidade)
     {
         try {
-            $dudas = Especialidade::find($especialidade) ;
+            $dudas = Especialidade::find($especialidade);
             if (!$dudas) {
                 return response()->json([
                     "message" => "Especialidad no encontrada"
@@ -84,25 +81,31 @@ class EspecialidadeController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request,$id)
+    public function update(Request $request, $id)
     {
         //
-        $validator=Validator::make($request->all(),$this->rulesEspecialidad,$this->mensajes);
-        if($validator -> fails()){
-            $messages=$validator->getMessageBag();
+        $validator = Validator::make($request->all(), $this->rulesEspecialidad, $this->mensajes);
+        if ($validator->fails()) {
+            $messages = $validator->getMessageBag();
             return response()->json([
-                'messages'=>$messages
+                'messages' => $messages
+            ], 500);
+        }
+        $existe=Especialidade::where('nombre',$request->nombre)->first();
+        if($existe){
+            return response()->json([
+                "message"=>"ya existe una especialidad con ese nombre"
             ],500);
         }
         $especialidad = Especialidade::findOrFail($id);
         $especialidad->update([
-            'nombre'=>$request->nombre,
+            'nombre' => $request->nombre,
 
-    ]);
+        ]);
 
-    return response()->json([
-        'messages'=>"Se actualizo correctamente"
-    ]);
+        return response()->json([
+            'messages' => "Se actualizo correctamente"
+        ]);
     }
 
     /**
@@ -113,7 +116,7 @@ class EspecialidadeController extends Controller
         //
         $especialidad = Especialidade::find($id)->delete();
         return response()->json([
-            'messages'=>"Se elimino correctamente", 'Especialidad'=> $especialidad
+            'messages' => "Se elimino correctamente", 'Especialidad' => $especialidad
         ]);
     }
 }

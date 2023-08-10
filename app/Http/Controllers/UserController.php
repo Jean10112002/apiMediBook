@@ -85,8 +85,8 @@ class UserController extends Controller
     public function index()
     {
         try {
-            $pacientes=Paciente::with('Usuario','Usuario.Rol','Usuario.Ubicacion','Usuario.DatosPersonale')->get();
-            $medicos=Medico::with('Usuario','Usuario.Rol','Usuario.Ubicacion','Usuario.DatosPersonale')->get();
+            $pacientes=Paciente::with('Usuario','Usuario.Rol','Usuario.Ubicacion','Usuario.DatosPersonale','Usuario.Rol')->get();
+            $medicos=Medico::with('Usuario','Usuario.Rol','Usuario.Ubicacion','Usuario.DatosPersonale','Usuario.Rol')->get();
 
             return response()->json([
                 "pacientes"=>$pacientes,
@@ -230,13 +230,13 @@ class UserController extends Controller
             } else {
                 return response()->json([
                     "status" => 0,
-                    "error" => "credenciales incorrectas",
+                    "message" => "credenciales incorrectas",
                 ], 500);
             }
         } else {
             return response()->json([
                 "status" => 0,
-                "error" => "Usuario no registrado",
+                "message" => "Usuario no registrado",
             ], 404);
         }
     }
@@ -299,7 +299,11 @@ class UserController extends Controller
             $messages = $validator->messages();
             return response()->json(["messages" => $messages], 500);
         }
-
+        if($id===1){
+            return response()->json([
+                "message"=>"vuelva a realizar lo solicitado"
+            ],500);
+        }
         try {
             $user = User::find($id);
             if (!$user) {

@@ -31,7 +31,7 @@ class PagoController extends Controller
     public function index()
     {
         try {
-            $medicamentos = Pago::with('Medico', 'Paciente', 'Cita', 'Medico.Usuario', 'Paciente.Usuario')->get();
+            $medicamentos = Pago::with('Medico', 'Paciente', 'Cita', 'Medico.Usuario.DatosPersonale','Medico.Especialidad', 'Paciente.Usuario.DatosPersonale')->get();
             return response()->json([
                 "pagos" => $medicamentos
             ], 200);

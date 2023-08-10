@@ -51,7 +51,7 @@ class ReseniaController extends Controller
     public function index()
     {
         //
-        $resenia = Resenia::with('Cita','Comentario')->get();
+        $resenia = Resenia::with('Cita','Comentario','Cita.Medico.Usuario.DatosPersonale','Cita.Medico.Especialidad','Cita.Paciente.Usuario.DatosPersonale')->get();
         return response()->json([
             "Resenia"=>$resenia
            ]);

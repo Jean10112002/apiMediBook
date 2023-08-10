@@ -50,7 +50,7 @@ class CitaController extends Controller
     public function index()
     {
         try {
-            $citas = Cita::with('Paciente', 'Medico', 'EstadoCita', 'Receta', 'Reseña', 'CitaObservacion', 'Pago', 'Medico.Especialidad', 'Medico.Titulo', 'Medico.Usuario.DatosPersonale', 'Paciente.AntecedentesMedico', 'Paciente.Medicamento', 'Paciente.Vacuna', 'Paciente.ExamenesMedico')->where('estado','=',1)->get();
+            $citas = Cita::with('Paciente', 'Medico', 'EstadoCita', 'Receta', 'Reseña', 'CitaObservacion', 'Pago', 'Medico.Especialidad', 'Medico.Titulo', 'Medico.Usuario.DatosPersonale', 'Paciente.AntecedentesMedico', 'Paciente.Medicamento', 'Paciente.Vacuna', 'Paciente.ExamenesMedico','Paciente.Usuario.DatosPersonale')->where('estado','=',1)->get();
             return response()->json([
                 "citas" => $citas
             ], 200);
@@ -74,7 +74,7 @@ class CitaController extends Controller
         $paciente=Paciente::where('user_id',$user)->first();
         try {
             $citaExistente=Cita::where('titulo',$request->titulo)->where('paciente_id',$paciente->id)->first();
-            if(!$citaExistente){
+            if($citaExistente){
                 return response()->json([
                     "message"=>"Ya tienes una cita con ese titulo"
                 ],500);

@@ -39,7 +39,7 @@ class CitaObservacionController extends Controller
     public function index()
     {
         //
-        $CitaObservacion = CitaObservacion::with('Cita')->get();
+        $CitaObservacion = CitaObservacion::with('Cita','Cita.EstadoCita','Cita.Medico.Usuario.DatosPersonale','Cita.Paciente.Usuario.DatosPersonale','Cita.Medico.Especialidad')->get();
         return response()->json([
             "CitaObservacion"=>$CitaObservacion
            ]);
