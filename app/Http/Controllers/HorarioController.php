@@ -25,13 +25,11 @@ class HorarioController extends Controller
         'medico_id.required' => 'El ID del médico es requerido.',
     ];
     private $rulesUpdate = [
-        'dia' => 'required',
         'hora_inicio' => 'required|date_format:H:i',
         'hora_fin' => 'required|date_format:H:i|after:hora_inicio',
     ];
 
     private $messagesUpdate = [
-        'dia.required' => 'El día es requerido.',
         'hora_inicio.required' => 'La hora de inicio es requerida.',
         'hora_inicio.date_format' => 'El formato de hora de inicio no es válido (HH:mm).',
         'hora_fin.required' => 'La hora de fin es requerida.',
@@ -49,7 +47,13 @@ class HorarioController extends Controller
     }
     public function index()
     {
-        //
+        $horario =   Horario::with('Medico.Usuario.DatosPersonale', 'Medico.Usuario.Ubicacion')->get();
+        if (!$horario) {
+            return response()->json(['message' => 'Horario no encontrado'], 404);
+        }
+        return response()->json([
+            'Horario' => $horario
+        ]);
     }
 
     /**
@@ -62,11 +66,11 @@ class HorarioController extends Controller
             $messages = $validator->messages();
             return response()->json(["messages" => $messages], 500);
         }
-        $diaRepetido=Horario::where('dia','=',$request->dia)->where('medico_id','=',$request->medico_id)->first();
-        if($diaRepetido){
+        $diaRepetido = Horario::where('dia', '=', $request->dia)->where('medico_id', '=', $request->medico_id)->first();
+        if ($diaRepetido) {
             return response()->json([
-                "message"=>"Dia ya registrado en el horario"
-            ],500);
+                "message" => "Dia ya registrado en el horario"
+            ], 500);
         }
         try {
             Horario::create([
@@ -92,9 +96,8 @@ class HorarioController extends Controller
             return response()->json(['message' => 'Horario no encontrado'], 404);
         }
         return response()->json([
-            'Horario'=>$horario
+            'Horario' => $horario
         ]);
-
     }
 
     /**
@@ -107,11 +110,9 @@ class HorarioController extends Controller
             $messages = $validator->messages();
             return response()->json(["messages" => $messages], 500);
         }
-
         try {
-            $horario=Horario::find($horario);
+            $horario = Horario::find($horario);
             $horario->update([
-                "dia" => $request->dia,
                 "hora_inicio" => $request->hora_inicio,
                 "hora_fin" => $request->hora_fin,
             ]);
@@ -124,13 +125,13 @@ class HorarioController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy( $horario)
+    public function destroy($horario)
     {
 
         try {
             Horario::find($horario)->delete();
             return response()->json([
-                "message"=>"horario eliminado"
+                "message" => "horario eliminado"
             ]);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
