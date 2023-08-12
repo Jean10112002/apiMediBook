@@ -132,7 +132,24 @@ class MedicoController extends Controller
         }
         try {
             $medico = Medico::find($id);
-            $medico->update($request->all());
+            $fechaNacimiento = $request->input('fecha');
+
+            // Parsea la fecha usando Carbon para que puedas trabajar con ella como objeto Carbon.
+            $fechaNacimientoCarbon = Carbon::parse($fechaNacimiento);
+
+            // Obtiene la fecha actual en formato Carbon.
+            $fechaActual = Carbon::now();
+
+            // Calcula la edad restando la fecha de nacimiento de la fecha actual y obteniendo los años.
+            $edad = $fechaActual->diffInYears($fechaNacimientoCarbon);
+            $medico->update([
+                'nombre' => $request->nombre,
+                'apellido' => $request->apellido,
+                'fecha' => $request->fecha,
+                'canton' => $request->canton,
+                'provincia' => $request->provincia,
+                'edad' => $edad
+            ]);
             return response()->json(["message" => "medico actualizado"], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
@@ -146,11 +163,10 @@ class MedicoController extends Controller
     {
         try {
             Medico::find($medico)->delete();
-        return response()->json(["message" => "medico eliminado"], 200);
+            return response()->json(["message" => "medico eliminado"], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
-
     }
     public function register(Request $request)
     {
@@ -179,8 +195,7 @@ class MedicoController extends Controller
         }
         $nombre = User::where("nombre", "=", $request->nombre)->first();
         if ($nombre) {
-            $apellido = User::where("apellido", "=", $request->apellido)->first();
-            if($apellido){
+            if ($nombre->apellido == $request->apellido) {
                 return response()->json([
                     "error" => "Nombres y apellidos ya utilizados"
                 ], 500);
@@ -225,33 +240,76 @@ class MedicoController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
-    public function informacionTotal(){
-        try{
+    public function informacionTotal()
+    {
+        try {
             $usuario = Auth::guard('sanctum')->user();
             $medic = Medico::where('user_id', $usuario->id)->first();
-            $medico = Medico::whereId($medic->id)->with('Cita.CitaObservacion','Usuario','Usuario.Rol',
-            'Usuario.DatosPersonale','Usuario.Ubicacion','Especialidad','Cita','Cita.Medico','Cita.Medico.Usuario',
-            'Cita.Medico.Especialidad','Cita.Medico.Usuario.Rol','Cita.Medico.Usuario.Ubicacion',
-            'Cita.Medico.Usuario.DatosPersonale','Cita.Paciente','Cita.Paciente.Usuario',
-            'Cita.Paciente.Usuario.Rol','Cita.Paciente.Usuario.DatosPersonale','Cita.Paciente.Usuario.Ubicacion',
-            'Cita.EstadoCita','Horario','Horario.Medico','Horario.Medico.Especialidad','Horario.Medico.Usuario','Horario.Medico.Usuario.Rol',
-            'Horario.Medico.Usuario.DatosPersonale','Horario.Medico.Usuario.Ubicacion',
-            'Titulo','Titulo.Medico','Titulo.Medico.Especialidad','Titulo.Medico.Usuario'
-            ,'Titulo.Medico.Usuario.Rol','Titulo.Medico.Usuario.DatosPersonale','Titulo.Medico.Usuario.Ubicacion'
-            ,'Pago','Pago.Cita','Pago.Cita.Medico','Pago.Cita.Medico.Usuario',
-            'Pago.Cita.Medico.Usuario.Rol',
-            'Pago.Cita.Medico.Usuario.DatosPersonale','Pago.Cita.Medico.Usuario.Ubicacion',
-            'Pago.Cita.Medico.Especialidad','Pago.Cita.Paciente','Pago.Cita.Paciente.Usuario',
-            'Pago.Cita.Paciente.Usuario.Rol','Pago.Cita.Paciente.Usuario.DatosPersonale'
-            ,'Pago.Cita.Paciente.Usuario.Ubicacion','Pago.Cita.EstadoCita',
-            'Pago.Medico','Pago.Medico.Especialidad','Pago.Medico.Usuario','Pago.Medico.Usuario.Rol',
-            'Pago.Medico.Usuario.DatosPersonale','Pago.Medico.Usuario.Ubicacion','Pago.Paciente',
-            'Pago.Paciente.Usuario','Pago.Paciente.Usuario.Rol','Pago.Paciente.Usuario.DatosPersonale',
-            'Pago.Paciente.Usuario.Ubicacion','Cita.Receta','Cita.Resenia.Comentario'
-           )->first();
+            $medico = Medico::whereId($medic->id)->with(
+                'Cita.CitaObservacion',
+                'Usuario',
+                'Usuario.Rol',
+                'Usuario.DatosPersonale',
+                'Usuario.Ubicacion',
+                'Especialidad',
+                'Cita',
+                'Cita.Medico',
+                'Cita.Medico.Usuario',
+                'Cita.Medico.Especialidad',
+                'Cita.Medico.Usuario.Rol',
+                'Cita.Medico.Usuario.Ubicacion',
+                'Cita.Medico.Usuario.DatosPersonale',
+                'Cita.Paciente',
+                'Cita.Paciente.Usuario',
+                'Cita.Paciente.Usuario.Rol',
+                'Cita.Paciente.Usuario.DatosPersonale',
+                'Cita.Paciente.Usuario.Ubicacion',
+                'Cita.EstadoCita',
+                'Horario',
+                'Horario.Medico',
+                'Horario.Medico.Especialidad',
+                'Horario.Medico.Usuario',
+                'Horario.Medico.Usuario.Rol',
+                'Horario.Medico.Usuario.DatosPersonale',
+                'Horario.Medico.Usuario.Ubicacion',
+                'Titulo',
+                'Titulo.Medico',
+                'Titulo.Medico.Especialidad',
+                'Titulo.Medico.Usuario',
+                'Titulo.Medico.Usuario.Rol',
+                'Titulo.Medico.Usuario.DatosPersonale',
+                'Titulo.Medico.Usuario.Ubicacion',
+                'Pago',
+                'Pago.Cita',
+                'Pago.Cita.Medico',
+                'Pago.Cita.Medico.Usuario',
+                'Pago.Cita.Medico.Usuario.Rol',
+                'Pago.Cita.Medico.Usuario.DatosPersonale',
+                'Pago.Cita.Medico.Usuario.Ubicacion',
+                'Pago.Cita.Medico.Especialidad',
+                'Pago.Cita.Paciente',
+                'Pago.Cita.Paciente.Usuario',
+                'Pago.Cita.Paciente.Usuario.Rol',
+                'Pago.Cita.Paciente.Usuario.DatosPersonale',
+                'Pago.Cita.Paciente.Usuario.Ubicacion',
+                'Pago.Cita.EstadoCita',
+                'Pago.Medico',
+                'Pago.Medico.Especialidad',
+                'Pago.Medico.Usuario',
+                'Pago.Medico.Usuario.Rol',
+                'Pago.Medico.Usuario.DatosPersonale',
+                'Pago.Medico.Usuario.Ubicacion',
+                'Pago.Paciente',
+                'Pago.Paciente.Usuario',
+                'Pago.Paciente.Usuario.Rol',
+                'Pago.Paciente.Usuario.DatosPersonale',
+                'Pago.Paciente.Usuario.Ubicacion',
+                'Cita.Receta',
+                'Cita.Resenia.Comentario'
+            )->first();
 
             return response()->json(['Informacion' => $medico]);
-        }catch (\Exception $e) {
+        } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
