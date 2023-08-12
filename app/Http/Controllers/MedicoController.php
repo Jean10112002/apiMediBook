@@ -62,9 +62,11 @@ class MedicoController extends Controller
         'nombre' => 'required|string',
         'apellido' => 'required|string',
         'fecha' => 'required|date',
+        'especialidad_id' => 'required',
     );
 
     private $messagesUpdate = array(
+        'nombre.required' => 'La especialidad es requerida.',
         'nombre.required' => 'El nombre es requerido.',
         'nombre.string' => 'El nombre debe ser texto.',
 
@@ -141,6 +143,9 @@ class MedicoController extends Controller
             // Calcula la edad resta ndo la fecha de nacimiento de la fecha actual y obteniendo los años.
             $edad = $fechaActual->diffInYears($fechaNacimientoCarbon);
             $user = User::find($medico->user_id);
+            $medico->update([
+                "especialidad_id"=>$request->especialidad_id
+            ]);
             $user->update([
                 'nombre' => $request->nombre,
                 'apellido' => $request->apellido,
