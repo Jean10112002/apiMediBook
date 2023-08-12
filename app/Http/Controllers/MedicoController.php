@@ -140,7 +140,7 @@ class MedicoController extends Controller
             // Obtiene la fecha actual en formato Carbon.
             $fechaActual = Carbon::now();
 
-            // Calcula la edad restando la fecha de nacimiento de la fecha actual y obteniendo los años.
+            // Calcula la edad resta ndo la fecha de nacimiento de la fecha actual y obteniendo los años.
             $edad = $fechaActual->diffInYears($fechaNacimientoCarbon);
             $medico->update([
                 'nombre' => $request->nombre,
@@ -178,26 +178,26 @@ class MedicoController extends Controller
         $user = User::where("email", "=", $request->email)->first();
         if ($user) {
             return response()->json([
-                "error" => "Correo ya utilizado"
+                "message" => "Correo ya utilizado"
             ], 500);
         }
         $ci = DatosPersonale::where("ci", "=", $request->ci)->first();
         if ($ci) {
             return response()->json([
-                "error" => "Cedula ya utilizada"
+                "message" => "Cedula ya utilizada"
             ], 500);
         }
         $telefono = DatosPersonale::where("telefono", "=", $request->telefono)->first();
         if ($telefono) {
             return response()->json([
-                "error" => "Telefono ya utilizado"
+                "message" => "Telefono ya utilizado"
             ], 500);
         }
         $nombre = User::where("nombre", "=", $request->nombre)->first();
         if ($nombre) {
             if ($nombre->apellido == $request->apellido) {
                 return response()->json([
-                    "error" => "Nombres y apellidos ya utilizados"
+                    "message" => "Nombres y apellidos ya utilizados"
                 ], 500);
             }
         }
