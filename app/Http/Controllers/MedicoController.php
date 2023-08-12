@@ -19,10 +19,11 @@ class MedicoController extends Controller
         'email' => 'required|email',
         'password' => 'required|min:5|max:10',
         'telefono' => 'required|regex:/^[0-9]+$/|digits_between:10,10',
-        'fecha' => 'required|date',
+        'fecha' => 'required|date|before_or_equal:today',
         'ci' => 'required|regex:/^[0-9]+$/|digits_between:10,10',
         'canton' => 'required|string',
-        'provincia' => 'required|string'
+        'provincia' => 'required|string',
+        'especialidad_id' => 'required'
     );
 
     private $messagesRegister = array(
@@ -54,7 +55,8 @@ class MedicoController extends Controller
         'canton.string' => 'El cantón debe ser texto.',
 
         'provincia.required' => 'La provincia es requerida.',
-        'provincia.string' => 'La provincia debe ser texto.'
+        'provincia.string' => 'La provincia debe ser texto.',
+        'especialidad_id.required' => 'La especialidad es requerida.',
     );
     private $rulesRegisterUpdate = array(
         'nombre' => 'required|string',
@@ -175,6 +177,15 @@ class MedicoController extends Controller
                 "error" => "Telefono ya utilizado"
             ], 500);
         }
+        $nombre = User::where("nombre", "=", $request->nombre)->first();
+        if ($nombre) {
+            $apellido = User::where("apellido", "=", $request->apellido)->first();
+            if($apellido){
+                return response()->json([
+                    "error" => "Nombres y apellidos ya utilizados"
+                ], 500);
+            }
+        }
         try {
             // Suponiendo que recibes la fecha en un campo llamado "fecha_nacimiento" del request.
             $fechaNacimiento = $request->input('fecha');
@@ -204,7 +215,7 @@ class MedicoController extends Controller
             ]);
             Medico::create([
                 "user_id" => $userNuevo->id,
-                "especialidad_id" => 1
+                "especialidad_id" => $request->especialidad_id
             ]);
             return response()->json([
                 "status" => 1,

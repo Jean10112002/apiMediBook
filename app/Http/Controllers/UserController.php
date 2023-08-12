@@ -229,13 +229,11 @@ class UserController extends Controller
                 ], 200);
             } else {
                 return response()->json([
-                    "status" => 0,
                     "message" => "credenciales incorrectas",
                 ], 500);
             }
         } else {
             return response()->json([
-                "status" => 0,
                 "message" => "Usuario no registrado",
             ], 404);
         }
