@@ -62,8 +62,6 @@ class MedicoController extends Controller
         'nombre' => 'required|string',
         'apellido' => 'required|string',
         'fecha' => 'required|date',
-        'canton' => 'required|string',
-        'provincia' => 'required|string'
     );
 
     private $messagesUpdate = array(
@@ -142,13 +140,16 @@ class MedicoController extends Controller
 
             // Calcula la edad resta ndo la fecha de nacimiento de la fecha actual y obteniendo los años.
             $edad = $fechaActual->diffInYears($fechaNacimientoCarbon);
-            $medico->update([
+            $user = User::find($medico->user_id);
+            $user->update([
                 'nombre' => $request->nombre,
                 'apellido' => $request->apellido,
-                'fecha' => $request->fecha,
-                'canton' => $request->canton,
-                'provincia' => $request->provincia,
-                'edad' => $edad
+
+            ]);
+            $datospersonalesUser = DatosPersonale::find($user->datos_personales_id);
+            $datospersonalesUser->update([
+                "fecha"=>$request->fecha,
+                "edad"=>$edad,
             ]);
             return response()->json(["message" => "medico actualizado"], 200);
         } catch (\Exception $e) {
