@@ -50,7 +50,7 @@ class CitaController extends Controller
     public function index()
     {
         try {
-            $citas = Cita::with('Paciente', 'Medico', 'EstadoCita', 'Receta', 'Resenia', 'CitaObservacion', 'Pago', 'Medico.Especialidad', 'Medico.Titulo', 'Medico.Usuario.DatosPersonale', 'Paciente.AntecedentesMedico', 'Paciente.Medicamento', 'Paciente.Vacuna', 'Paciente.ExamenesMedico','Paciente.Usuario.DatosPersonale')->where('estado','=',1)->get();
+            $citas = Cita::with('Paciente', 'Medico', 'EstadoCita', 'Receta', 'Resenia', 'CitaObservacion', 'Pago', 'Medico.Especialidad', 'Medico.Titulo', 'Medico.Usuario.DatosPersonale', 'Paciente.AntecedentesMedico', 'Paciente.Medicamento', 'Paciente.Vacuna', 'Paciente.ExamenesMedico', 'Paciente.Usuario.DatosPersonale')->where('estado', '=', 1)->get();
             return response()->json([
                 "citas" => $citas
             ], 200);
@@ -70,27 +70,27 @@ class CitaController extends Controller
             return response()->json(["messages" => $messages], 500);
         }
 
-        $user=Auth::guard('sanctum')->user()->id;
-        $paciente=Paciente::where('user_id',$user)->first();
+        $user = Auth::guard('sanctum')->user()->id;
+        $paciente = Paciente::where('user_id', $user)->first();
         try {
-            $citaExistente=Cita::where('titulo',$request->titulo)->where('paciente_id',$paciente->id)->first();
-            if($citaExistente){
+            $citaExistente = Cita::where('titulo', $request->titulo)->where('paciente_id', $paciente->id)->first();
+            if ($citaExistente) {
                 return response()->json([
-                    "message"=>"Ya tienes una cita con ese titulo"
-                ],500);
+                    "message" => "Ya tienes una cita con ese titulo"
+                ], 500);
             }
 
             Cita::create([
-                "fecha"=>Carbon::now()->toDateString(),
-                "titulo"=>$request->titulo,
-                "hora_inicio"=>$request->hora_inicio,
-                "hora_fin"=>$request->hora_fin,
-                "medico_id"=>$request->medico_id,
-                "paciente_id"=>$paciente->id,
+                "fecha" => Carbon::now()->toDateString(),
+                "titulo" => $request->titulo,
+                "hora_inicio" => $request->hora_inicio,
+                "hora_fin" => $request->hora_fin,
+                "medico_id" => $request->medico_id,
+                "paciente_id" => $paciente->id,
             ]);
             return response()->json([
-                "message"=>"cita creada exitosamente"
-            ],200);
+                "message" => "cita creada exitosamente"
+            ], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
@@ -99,18 +99,18 @@ class CitaController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show( $cita)
+    public function show($cita)
     {
         try {
-            $cita = Cita::with('Paciente', 'Medico', 'EstadoCita', 'Receta', 'Resenia', 'CitaObservacion', 'Pago', 'Medico.Especialidad', 'Medico.Titulo', 'Medico.Usuario.DatosPersonale', 'Paciente.AntecedentesMedico', 'Paciente.Medicamento', 'Paciente.Vacuna', 'Paciente.ExamenesMedico')->whereId($cita)->where('estado','=',1)->first();
-            if(!$cita){
+            $cita = Cita::with('Paciente', 'Medico', 'EstadoCita', 'Receta', 'Resenia', 'CitaObservacion', 'Pago', 'Medico.Especialidad', 'Medico.Titulo', 'Medico.Usuario.DatosPersonale', 'Paciente.AntecedentesMedico', 'Paciente.Medicamento', 'Paciente.Vacuna', 'Paciente.ExamenesMedico')->whereId($cita)->where('estado', '=', 1)->first();
+            if (!$cita) {
                 return response()->json([
-                    "message"=>"cita no encontrada, no existe"
-                ],404);
+                    "message" => "cita no encontrada, no existe"
+                ], 404);
             }
             return response()->json([
-                "cita"=>$cita
-            ],200);
+                "cita" => $cita
+            ], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
@@ -127,14 +127,29 @@ class CitaController extends Controller
             return response()->json(["messages" => $messages], 500);
         }
         try {
+            $cita = Cita::whereId($cita);
+            if ($cita) {
+                $fechaCita = Carbon::parse($cita->fecha); // Convierte la fecha de la cita en un objeto Carbon
+                $fechaActual = Carbon::now();
+
+                if (!$fechaCita->isBefore($fechaActual)) {
+                    return response()->json([
+                        "message"=>"la fecha ya pasó, no puedes actualizar"
+                    ],500);
+                }
+            } else {
+                return response()->json([
+                    "message"=>"No se encontró cita"
+                ],404);
+            }
             Cita::whereId($cita)->update([
-                "fecha"=>$request->fecha,
-                "hora_inicio"=>$request->hora_inicio,
-                "hora_fin"=>$request->hora_fin,
+                "fecha" => $request->fecha,
+                "hora_inicio" => $request->hora_inicio,
+                "hora_fin" => $request->hora_fin,
             ]);
             return response()->json([
-                "message"=>"cita actualizada exitosamente"
-            ],200);
+                "message" => "cita actualizada exitosamente"
+            ], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
@@ -146,13 +161,26 @@ class CitaController extends Controller
     public function destroy($cita)
     {
         try {
-            $cita=Cita::findOrFail($cita);
-            $cita->estado=0;
-            $cita->estado_cita_id=2;
+            $cita = Cita::whereId($cita);
+            if ($cita) {
+                $fechaCita = Carbon::parse($cita->fecha); // Convierte la fecha de la cita en un objeto Carbon
+                $fechaActual = Carbon::now();
+                if (!$fechaCita->isBefore($fechaActual)) {
+                    return response()->json([
+                        "message"=>"la fecha ya pasó, no puedes cancelarla"
+                    ],500);
+                }
+            } else {
+                return response()->json([
+                    "message"=>"No se encontró cita"
+                ],404);
+            }
+            $cita->estado = 0;
+            $cita->estado_cita_id = 2;
             $cita->save();
             return response()->json([
-                "message"=>"cita eliminada exitosamente"
-            ],200);
+                "message" => "cita eliminada exitosamente"
+            ], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
