@@ -105,19 +105,19 @@ class PacienteController extends Controller
         $user = User::where("email", "=", $request->email)->first();
         if ($user) {
             return response()->json([
-                "error" => "Correo ya utilizado"
+                "message" => "Correo ya utilizado"
             ], 500);
         }
         $ci = DatosPersonale::where("ci", "=", $request->ci)->first();
         if ($ci) {
             return response()->json([
-                "error" => "Cedula ya utilizada"
+                "message" => "Cedula ya utilizada"
             ], 500);
         }
         $telefono = DatosPersonale::where("telefono", "=", $request->telefono)->first();
         if ($telefono) {
             return response()->json([
-                "error" => "Telefono ya utilizado"
+                "message" => "Telefono ya utilizado"
             ], 500);
         }
         try {
