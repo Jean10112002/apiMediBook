@@ -169,8 +169,8 @@ class MedicoController extends Controller
     {
         try {
             $medico=Medico::find($medico);
-            User::find($medico->user_id)->delete();
-            $medico->delete();
+            $user=User::find($medico->user_id);
+            DatosPersonale::find($user->datos_personales_id)->delete();
             return response()->json(["message" => "medico eliminado"], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
