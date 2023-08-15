@@ -161,7 +161,7 @@ class CitaController extends Controller
     public function destroy($cita)
     {
         try {
-            $cita = Cita::whereId($cita);
+            $cita = Cita::whereId($cita)->first();
             if ($cita) {
                 $fechaCita = Carbon::parse($cita->fecha); // Convierte la fecha de la cita en un objeto Carbon
                 $fechaActual = Carbon::now();

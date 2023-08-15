@@ -22,7 +22,7 @@ class DudaController extends Controller
     public function index()
     {
         try {
-            $dudas = Duda::with('Paciente', 'ReplyDuda', 'Paciente.Usuario', 'ReplyDuda.Usuario')->get();
+            $dudas = Duda::with('Paciente', 'ReplyDuda', 'Paciente.Usuario', 'ReplyDuda.Usuario.Rol','Paciente.Usuario.Rol')->get();
             return response()->json([
                 "dudas" => $dudas
             ], 200);

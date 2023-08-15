@@ -119,6 +119,18 @@ class MedicoController extends Controller
             "medico" => $medico
         ]);
     }
+    public function showMedico($medico)
+    {
+        $medico = Medico::with('Usuario', 'Usuario.Rol', 'Usuario.DatosPersonale', 'Usuario.Ubicacion', 'Especialidad', 'Cita', 'Horario', 'Titulo', 'Pago','Cita')->where('user_id','=',$medico)->first();
+        if (!$medico) {
+            return response()->json([
+                "message" => "Medico no encontrado"
+            ], 500);
+        }
+        return response()->json([
+            "medico" => $medico
+        ]);
+    }
 
     /**
      * Update the specified resource in storage.

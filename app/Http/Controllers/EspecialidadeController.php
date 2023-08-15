@@ -12,6 +12,12 @@ class EspecialidadeController extends Controller
     /**
      * Display a listing of the resource.
      */
+    public function __construct()
+    {
+        $this->middleware(['onlyAdmin'])->only('store');
+        $this->middleware(['onlyAdmin'])->only('update');
+        $this->middleware(['onlyAdmin'])->only('destroy');
+    }
     public $rulesEspecialidad = array(
         'nombre' => 'required|string',
 

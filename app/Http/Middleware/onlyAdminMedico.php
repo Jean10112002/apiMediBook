@@ -22,6 +22,6 @@ class onlyAdminMedico
             return $next($request);
         }
 
-        return response()->json(["error" => "no autorizado"], 403);
+        return response()->json(["message" => "no autorizado"], 403);
     }
 }

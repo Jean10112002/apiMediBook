@@ -18,7 +18,7 @@ class onlyMedico
     {
         $usuario = Auth::guard('sanctum')->user();
         if ($usuario->rol_id!=2) {
-            return response()->json(["error" => "no autorizado"], 403);
+            return response()->json(["message" => "no autorizado"], 403);
         }
         return $next($request);
     }

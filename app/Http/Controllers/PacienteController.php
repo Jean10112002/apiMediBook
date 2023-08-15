@@ -75,9 +75,39 @@ class PacienteController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Paciente $paciente)
+    public function show( $id)
     {
-        //
+        try {
+            $pacientes=Paciente::with('Usuario','Usuario.Rol','Usuario.Ubicacion','Usuario.DatosPersonale','Usuario.Rol','AntecedentesMedico','Medicamento','Vacuna','ExamenesMedico','Pago')->where('id', '=', $id)->first();;
+           /*  $usuarios = User::with('Rol', 'Ubicacion', 'DatosPersonale')->where('id', '=', $id)->first(); */
+            if(!($pacientes)){
+                return response()->json([
+                    "message"=>"no existe ese usuario"
+                ],500);
+            }
+            return response()->json([
+                "usuario" => $pacientes
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+    public function showPaciente( $id)
+    {
+        try {
+            $pacientes=Paciente::with('Usuario','Usuario.Rol','Usuario.Ubicacion','Usuario.DatosPersonale','Usuario.Rol','AntecedentesMedico','Medicamento','Vacuna','ExamenesMedico','Pago','Cita')->where('user_id', '=', $id)->first();;
+           /*  $usuarios = User::with('Rol', 'Ubicacion', 'DatosPersonale')->where('id', '=', $id)->first(); */
+            if(!($pacientes)){
+                return response()->json([
+                    "message"=>"no existe ese usuario"
+                ],500);
+            }
+            return response()->json([
+                "usuario" => $pacientes
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     /**
@@ -163,8 +193,8 @@ class PacienteController extends Controller
         try{
             $usuario = Auth::guard('sanctum')->user();
             $paciente = Paciente::where('user_id', $usuario->id)->first();
-            $paciente = Paciente::whereId($paciente->id)->with('Usuario','Usuario.Rol',
-            'Usuario.DatosPersonale','Usuario.Ubicacion','Cita','Cita.Medico','Cita.Medico.Usuario',
+            $paciente = Paciente::whereId($paciente->id)->with('Cita','Usuario','Usuario.Rol',
+            'Usuario.DatosPersonale','Usuario.Ubicacion','Cita.Medico','Cita.Medico.Usuario',
             'Cita.Medico.Especialidad','Cita.Medico.Usuario.Rol','Cita.Medico.Usuario.Ubicacion',
             'Cita.Medico.Usuario.DatosPersonale','Cita.Paciente','Cita.Paciente.Usuario',
             'Cita.Paciente.Usuario.Rol','Cita.Paciente.Usuario.DatosPersonale','Cita.Paciente.Usuario.Ubicacion',
@@ -208,9 +238,9 @@ class PacienteController extends Controller
             ,'Vacuna.Paciente.Usuario.DatosPersonale',
             'Vacuna.Paciente.Usuario.Ubicacion','ExamenesMedico','ExamenesMedico.Paciente',
             'ExamenesMedico.Paciente.Usuario','ExamenesMedico.Paciente.Usuario.Rol',
-            'ExamenesMedico.Paciente.Usuario.DatosPersonale','ExamenesMedico.Paciente.Usuario.Ubicacion',)->where('id','=',$id)->get();
+            'ExamenesMedico.Paciente.Usuario.DatosPersonale','ExamenesMedico.Paciente.Usuario.Ubicacion',)->where('id','=',$id)->first();
 
-            return response()->json(['Historial Medico' => $paciente]);
+            return response()->json(['historial' => $paciente]);
         }catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }

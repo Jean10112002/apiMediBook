@@ -86,7 +86,7 @@ class UserController extends Controller
     {
         try {
             $pacientes=Paciente::with('Usuario','Usuario.Rol','Usuario.Ubicacion','Usuario.DatosPersonale','Usuario.Rol')->get();
-            $medicos=Medico::with('Usuario','Usuario.Rol','Usuario.Ubicacion','Usuario.DatosPersonale','Usuario.Rol')->get();
+            $medicos=Medico::with('Usuario','Usuario.Rol','Usuario.Ubicacion','Usuario.DatosPersonale','Usuario.Rol','Especialidad')->get();
 
             return response()->json([
                 "pacientes"=>$pacientes,
@@ -112,6 +112,7 @@ class UserController extends Controller
     public function show($id)
     {
         try {
+            /* $pacientes=Paciente::with('Usuario','Usuario.Rol','Usuario.Ubicacion','Usuario.DatosPersonale','Usuario.Rol','AntecedentesMedico','Medicamento','Vacuna','ExamenesMedico','Pago')->where('id', '=', $id)->first();; */
             $usuarios = User::with('Rol', 'Ubicacion', 'DatosPersonale')->where('id', '=', $id)->first();
             if(!($usuarios)){
                 return response()->json([
