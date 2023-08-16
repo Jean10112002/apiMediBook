@@ -95,7 +95,7 @@ class PacienteController extends Controller
     public function showPaciente( $id)
     {
         try {
-            $pacientes=Paciente::with('Usuario','Usuario.Rol','Usuario.Ubicacion','Usuario.DatosPersonale','Usuario.Rol','AntecedentesMedico','Medicamento','Vacuna','ExamenesMedico','Pago','Cita')->where('user_id', '=', $id)->first();;
+            $pacientes=Paciente::with('Usuario','Usuario.Rol','Usuario.Ubicacion','Usuario.DatosPersonale','Usuario.Rol','AntecedentesMedico','Medicamento','Vacuna','ExamenesMedico','Pago','Cita','Cita.CitaObservacion.Cita.Paciente.Usuario','Cita.CitaObservacion.Cita.Medico.Usuario','Cita.Medico','Cita.Medico.Usuario','Cita.Paciente','Cita.Paciente.Usuario')->where('user_id', '=', $id)->first();;
            /*  $usuarios = User::with('Rol', 'Ubicacion', 'DatosPersonale')->where('id', '=', $id)->first(); */
             if(!($pacientes)){
                 return response()->json([
@@ -218,7 +218,7 @@ class PacienteController extends Controller
             'Pago.Medico','Pago.Medico.Especialidad','Pago.Medico.Usuario','Pago.Medico.Usuario.Rol',
             'Pago.Medico.Usuario.DatosPersonale','Pago.Medico.Usuario.Ubicacion','Pago.Paciente',
             'Pago.Paciente.Usuario','Pago.Paciente.Usuario.Rol','Pago.Paciente.Usuario.DatosPersonale',
-            'Pago.Paciente.Usuario.Ubicacion')->first();
+            'Pago.Paciente.Usuario.Ubicacion',)->first();
 
             return response()->json(['Informacion' => $paciente]);
         }catch (\Exception $e) {

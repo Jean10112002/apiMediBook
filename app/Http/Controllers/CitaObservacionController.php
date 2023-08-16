@@ -80,10 +80,10 @@ class CitaObservacionController extends Controller
     {
         //
         try {
-            $resenia = CitaObservacion::with('Cita')->findOrFail($id);
+            $resenia = CitaObservacion::with('Cita','Cita.Medico.Usuario','Cita.Paciente.Usuario')->findOrFail($id);
 
             return response()->json([
-                "Resenia" => $resenia
+                "Observacion" => $resenia
             ]);
         } catch (ModelNotFoundException $e) {
             return response()->json(['error' => 'CitaObservacion no encontrada'], 404);
