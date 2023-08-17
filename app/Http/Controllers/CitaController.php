@@ -134,13 +134,23 @@ class CitaController extends Controller
 
                 if (!$fechaCita->isBefore($fechaActual)) {
                     return response()->json([
-                        "message"=>"la fecha ya pasó, no puedes actualizar"
-                    ],500);
+                        "message" => "la fecha ya pasó, no puedes actualizar"
+                    ], 500);
                 }
             } else {
                 return response()->json([
-                    "message"=>"No se encontró cita"
-                ],404);
+                    "message" => "No se encontró cita"
+                ], 404);
+            }
+            $start_time = strtotime($request->input('hora_inicio'));
+            $end_time = strtotime($request->input('hora_fin'));
+
+            if ($start_time >= $end_time) {
+                return response()->json(['message' => 'La hora de inicio debe ser menor que la hora de fin.'], 500);
+            }
+
+            if ($end_time <= $start_time) {
+                return response()->json(['message' => 'La hora de fin debe ser mayor que la hora de inicio.'], 500);
             }
             Cita::whereId($cita)->update([
                 "fecha" => $request->fecha,
@@ -167,13 +177,13 @@ class CitaController extends Controller
                 $fechaActual = Carbon::now();
                 if (!$fechaCita->isBefore($fechaActual)) {
                     return response()->json([
-                        "message"=>"la fecha ya pasó, no puedes cancelarla"
-                    ],500);
+                        "message" => "la fecha ya pasó, no puedes cancelarla"
+                    ], 500);
                 }
             } else {
                 return response()->json([
-                    "message"=>"No se encontró cita"
-                ],404);
+                    "message" => "No se encontró cita"
+                ], 404);
             }
             $cita->estado = 0;
             $cita->estado_cita_id = 2;
