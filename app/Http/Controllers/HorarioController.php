@@ -26,7 +26,7 @@ class HorarioController extends Controller
     ];
     private $rulesUpdate = [
         'hora_inicio' => 'required|date_format:H:i',
-        'hora_fin' => 'required|date_format:H:i|after:hora_inicio',
+        'hora_fin' => 'required|date_format:H:i',
     ];
 
     private $messagesUpdate = [
@@ -34,7 +34,6 @@ class HorarioController extends Controller
         'hora_inicio.date_format' => 'El formato de hora de inicio no es válido (HH:mm).',
         'hora_fin.required' => 'La hora de fin es requerida.',
         'hora_fin.date_format' => 'El formato de hora de fin no es válido (HH:mm).',
-        'hora_fin.after' => 'La hora de fin debe ser posterior a la hora de inicio.',
     ];
     /**
      * Display a listing of the resource.
@@ -72,6 +71,7 @@ class HorarioController extends Controller
                 "message" => "Dia ya registrado en el horario"
             ], 500);
         }
+
         try {
             Horario::create([
                 "dia" => $request->dia,
@@ -109,6 +109,16 @@ class HorarioController extends Controller
         if ($validator->fails()) {
             $messages = $validator->messages();
             return response()->json(["messages" => $messages], 500);
+        }
+        $start_time = strtotime($request->input('hora_inicio'));
+        $end_time = strtotime($request->input('hora_fin'));
+
+        if ($start_time >= $end_time) {
+            return response()->json(['message' => 'La hora de inicio debe ser menor que la hora de fin.'], 500);
+        }
+
+        if ($end_time <= $start_time) {
+            return response()->json(['message' => 'La hora de fin debe ser mayor que la hora de inicio.'], 500);
         }
         try {
             $horario = Horario::find($horario);
