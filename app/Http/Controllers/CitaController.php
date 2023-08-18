@@ -15,6 +15,7 @@ class CitaController extends Controller
      * Display a listing of the resource.
      */
     private $rules = [
+        'fecha' => 'required|date|after_or_equal:today',
         'titulo' => 'required|string',
         'hora_inicio' => 'required|date_format:H:i',
         'hora_fin' => 'required|date_format:H:i|after:hora_inicio',
@@ -24,6 +25,9 @@ class CitaController extends Controller
     private $messages = [
         'titulo.required' => 'El campo título es requerido.',
         'titulo.string' => 'El campo título debe ser una cadena de texto.',
+        'fecha.required' => 'El campo fecha es requerido.',
+        'fecha.date' => 'El campo fecha debe ser una fecha válida.',
+        'fecha.after_or_equal' => 'La fecha debe ser igual o posterior a hoy.',
         'hora_inicio.required' => 'El campo hora de inicio es requerido.',
         'hora_inicio.date_format' => 'El campo hora de inicio debe tener el formato de hora (HH:MM).',
         'hora_fin.required' => 'El campo hora de fin es requerido.',
@@ -35,9 +39,13 @@ class CitaController extends Controller
         'fecha' => 'required|date|after_or_equal:today',
         'hora_inicio' => 'required|date_format:H:i',
         'hora_fin' => 'required|date_format:H:i|after:hora_inicio',
+        'titulo' => 'required|string',
+
     ];
 
     private $mensajesUpdate = [
+        'titulo.required' => 'El campo título es requerido.',
+        'titulo.string' => 'El campo título debe ser una cadena de texto.',
         'fecha.required' => 'El campo fecha es requerido.',
         'fecha.date' => 'El campo fecha debe ser una fecha válida.',
         'fecha.after_or_equal' => 'La fecha debe ser igual o posterior a hoy.',
@@ -81,7 +89,7 @@ class CitaController extends Controller
             }
 
             Cita::create([
-                "fecha" => Carbon::now()->toDateString(),
+                "fecha" =>$request->fecha,
                 "titulo" => $request->titulo,
                 "hora_inicio" => $request->hora_inicio,
                 "hora_fin" => $request->hora_fin,
@@ -102,7 +110,7 @@ class CitaController extends Controller
     public function show($cita)
     {
         try {
-            $cita = Cita::with('Paciente', 'Medico', 'EstadoCita', 'Receta', 'Resenia', 'CitaObservacion', 'Pago', 'Medico.Especialidad', 'Medico.Titulo', 'Medico.Usuario.DatosPersonale', 'Paciente.AntecedentesMedico', 'Paciente.Medicamento', 'Paciente.Vacuna', 'Paciente.ExamenesMedico')->whereId($cita)->where('estado', '=', 1)->first();
+            $cita = Cita::with('Paciente', 'Medico', 'EstadoCita', 'Receta', 'Resenia', 'CitaObservacion', 'Pago', 'Medico.Especialidad', 'Medico.Titulo', 'Medico.Usuario.DatosPersonale', 'Paciente.AntecedentesMedico', 'Paciente.Medicamento', 'Paciente.Vacuna', 'Paciente.ExamenesMedico','Paciente.Usuario.DatosPersonale')->whereId($cita)->where('estado', '=', 1)->first();
             if (!$cita) {
                 return response()->json([
                     "message" => "cita no encontrada, no existe"
@@ -127,12 +135,12 @@ class CitaController extends Controller
             return response()->json(["messages" => $messages], 500);
         }
         try {
-            $cita = Cita::whereId($cita);
+            $cita = Cita::find($cita);
             if ($cita) {
                 $fechaCita = Carbon::parse($cita->fecha); // Convierte la fecha de la cita en un objeto Carbon
                 $fechaActual = Carbon::now();
 
-                if (!$fechaCita->isBefore($fechaActual)) {
+                if ($fechaCita->isBefore($fechaActual)) {
                     return response()->json([
                         "message" => "la fecha ya pasó, no puedes actualizar"
                     ], 500);
@@ -152,10 +160,11 @@ class CitaController extends Controller
             if ($end_time <= $start_time) {
                 return response()->json(['message' => 'La hora de fin debe ser mayor que la hora de inicio.'], 500);
             }
-            Cita::whereId($cita)->update([
-                "fecha" => $request->fecha,
+            $cita->update([
                 "hora_inicio" => $request->hora_inicio,
                 "hora_fin" => $request->hora_fin,
+                "titulo"=>$request->titulo,
+                "fecha"=>$request->fecha
             ]);
             return response()->json([
                 "message" => "cita actualizada exitosamente"
